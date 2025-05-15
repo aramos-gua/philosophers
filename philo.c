@@ -26,7 +26,7 @@ static int	isnt_number(char *str)
 	return (0);
 }
 
-int	check_args(int options, char **argv)
+static int	check_args(int options, char **argv)
 {
 	while (options > 0)
 		if (isnt_number(argv[options--]) == 1)
@@ -34,12 +34,27 @@ int	check_args(int options, char **argv)
 	return (0);
 }
 
+void	philo_init(t_philo *philo, char **argv)
+{
+	philo->philos = ft_atoi(argv[1]);
+	philo->ttd = ft_atoi(argv[2]);
+	philo->tte = ft_atoi(argv[3]);
+	philo->tts = ft_atoi(argv[4]);
+	if (argv[5])
+		philo->rounds = ft_atoi(argv[5]);
+	else
+		philo->rounds = -1;
+}
+
 int	main(int argc, char **argv)
 {
+	t_philo	philo;
+
 	if (argc < 5 || check_args(argc - 1, argv))
 	{
 		ft_printf("Usage: ./philo [Int] [TTD] [TTE] [TTS] [Int]\n");
 		return (1);
 	}
-
+	philo_init(&philo, argv);
+	ft_printf("philos: %d\nttd: %d\ntte: %d\ntts: %d\nrounds: %d\n", philo.philos, philo.ttd, philo.tte, philo.tts, philo.rounds);
 }

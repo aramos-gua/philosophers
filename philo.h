@@ -16,13 +16,13 @@
 #include "./libft/libft.h"
 #include <pthread.h>
 
-typedef struct	s_philos
+typedef struct	s_philo
 {
 	int	philos;
 	int	ttd;
 	int	tte;
 	int	tts;
 	int	rounds;
-}
+}	t_philo;
 
 #endif
