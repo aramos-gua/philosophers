@@ -27,7 +27,7 @@ CC = cc
 CFLAGS = -Wall -Werror -Wextra -pthread
 
 # Directories of dependencies
-LIBFTDIR = = ./libft
+LIBFTDIR = ./libft
 
 # Target names
 NAME = philo

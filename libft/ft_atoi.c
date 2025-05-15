@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 12:54:24 by aramos            #+#    #+#             */
-/*   Updated: 2025/05/15 13:59:52 by alex             ###   ########.fr       */
+/*   Updated: 2025/05/15 17:02:24 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,14 @@ int	ft_atoi(const char *nptr)
 		num = num * 10 + (*nptr++ - '0');
 	return (num * sign);
 }
-
-#include <stdio.h>
-
-int	main(void)
-{
-	const char	my_numbers [] = "2147483647";
-
-	printf("Original:%d\n", atoi(my_numbers));
-	printf("Mine:%d\n",ft_atoi('a'));
-	return (0);
-}	
+//
+//#include <stdio.h>
+//
+//int	main(void)
+//{
+//	const char	my_numbers [] = "2147483647";
+//
+//	printf("Original:%d\n", atoi(my_numbers));
+//	printf("Mine:%d\n",ft_atoi('a'));
+//	return (0);
+//}	
