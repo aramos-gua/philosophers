@@ -26,12 +26,8 @@ DARK_YELLOW =	\033[38;5;143m
 CC = cc
 CFLAGS = -Wall -Werror -Wextra -pthread
 
-# Directories of dependencies
-LIBFTDIR = ./libft
-
 # Target names
 NAME = philo
-LIBFT = $(LIBFTDIR)/libft.a
 
 # Files
 SRC = ./philo.c
@@ -39,8 +35,8 @@ SRC = ./philo.c
 OBJ = $(SRC:.c=.o)
 
 # Create program
-$(NAME): $(OBJ) $(LIBFT)
-	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -o $(NAME)
+$(NAME): $(OBJ)
+	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
 	@echo "\n${GREEN} Created ${NAME} ${DEF_COLOR}\n"
 
 $(LIBFT):
@@ -57,12 +53,10 @@ all: $(NAME)
 # Remove .o files
 clean:
 	@rm -f $(OBJ)
-	@make --no-print-directory -C $(LIBFTDIR) clean
 
 # Clean everything
 fclean: clean
 	@rm -f $(NAME)
-	@make --no-print-directory -C $(LIBFTDIR) fclean
 	@echo "\n ${GREEN} Cleaned $(NAME) ${DEF_COLOR}"
 
 # Rebuild everything

@@ -15,14 +15,15 @@
 
 #include "./libft/libft.h"
 #include <pthread.h>
+#include <limits.h>
 
 typedef struct	s_philo
 {
-	int	philos;
-	int	ttd;
-	int	tte;
-	int	tts;
-	int	rounds;
+	unsigned int	philos;
+	unsigned int	ttd;
+	unsigned int	tte;
+	unsigned int	tts;
+	int				rounds;
 }	t_philo;
 
 #endif

@@ -26,16 +26,33 @@ static int	isnt_number(char *str)
 	return (0);
 }
 
+static int	off_bounds(char *str)
+{
+	long	num;
+
+	num = atoln(str);
+	if (num > UINT_MAX)
+		return (1);
+	if (num < 0)
+		return (1);
+	return (0);
+}
+
 static int	check_args(int options, char **argv)
 {
 	while (options > 0)
-		if (isnt_number(argv[options--]) == 1)
+	{
+		if (isnt_number(argv[options]) == 1)
 			return (1);
+		if (off_bounds(argv[options]) == 1)
+			return (1);
+	}
 	return (0);
 }
 
 void	philo_init(t_philo *philo, char **argv)
 {
+	if (off_bounds(*argv) != 0)
 	philo->philos = ft_atoi(argv[1]);
 	philo->ttd = ft_atoi(argv[2]);
 	philo->tte = ft_atoi(argv[3]);
@@ -52,7 +69,7 @@ int	main(int argc, char **argv)
 
 	if (argc < 5 || check_args(argc - 1, argv))
 	{
-		ft_printf("Usage: ./philo [Int] [TTD] [TTE] [TTS] [Int]\n");
+		printf("Usage: ./philo [Int] [TTD] [TTE] [TTS] [Int]\n");
 		return (1);
 	}
 	philo_init(&philo, argv);
