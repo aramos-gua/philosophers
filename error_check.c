@@ -6,7 +6,7 @@
 /*   By: alex <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 10:25:34 by alex              #+#    #+#             */
-/*   Updated: 2025/05/16 10:54:23 by alex             ###   ########.fr       */
+/*   Updated: 2025/05/16 11:21:36 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@ int	check_args(int options, char **argv)
 	int	i;
 
 	i = 1;
-	while (i < options)
+	while (i <= options)
 	{
-		if (isnt_pos_number(argv[i]) !=  0)
+		if (isnt_pos_number(argv[i]) != 0)
 		{
 			printf("Error: Only possitive numbers as arguments\n");
 			return (1);

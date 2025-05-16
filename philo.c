@@ -6,12 +6,11 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/05/16 10:50:25 by alex             ###   ########.fr       */
+/*   Updated: 2025/05/16 11:20:15 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
 
 void	philo_init(t_philo *philo, char **argv)
 {

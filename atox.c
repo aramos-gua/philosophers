@@ -6,7 +6,7 @@
 /*   By: alex <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 10:11:34 by alex              #+#    #+#             */
-/*   Updated: 2025/05/16 10:31:48 by alex             ###   ########.fr       */
+/*   Updated: 2025/05/16 11:20:46 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ long	ft_atoln(const char *str)
 unsigned int	ft_atou(const char *str)
 {
 	unsigned int	num;
-	int		sign;
+	int				sign;
 
 	sign = 1;
 	num = 0;
