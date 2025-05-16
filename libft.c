@@ -1,34 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.h                                            :+:      :+:    :+:   */
+/*   libft.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alex <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/15 13:57:01 by alex              #+#    #+#             */
-/*   Updated: 2025/05/16 10:48:12 by alex             ###   ########.fr       */
+/*   Created: 2025/05/16 09:53:10 by alex              #+#    #+#             */
+/*   Updated: 2025/05/16 10:13:36 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_H
-# define PHILO_H
+#include "philo.h"
 
-#include <pthread.h>
-#include <limits.h>
-#include <stdio.h>
-
-typedef struct	s_philo
+int	ft_isdigit(int c)
 {
-	unsigned int	philos;
-	unsigned int	ttd;
-	unsigned int	tte;
-	unsigned int	tts;
-	int				rounds;
-}	t_philo;
-// Libft functions
-int	ft_isdigit(int c);
-long		ft_atoln(const char *str);
-unsigned int	ft_atou(const char *str);
-// Error handling 
-int		check_args(int options, char **argv);
-#endif
+	char	a;
+
+	a = (char)c;
+	if (a >= '0' && a <= '9')
+		return (1);
+	return (0);
+}
+

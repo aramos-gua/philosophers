@@ -30,7 +30,10 @@ CFLAGS = -Wall -Werror -Wextra -pthread
 NAME = philo
 
 # Files
-SRC = ./philo.c
+SRC = ./philo.c\
+	./libft.c\
+	./atox.c\
+	./error_check.c
 
 OBJ = $(SRC:.c=.o)
 
