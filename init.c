@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 15:07:50 by aramos            #+#    #+#             */
-/*   Updated: 2025/05/17 19:26:42 by aramos           ###   ########.fr       */
+/*   Updated: 2025/05/17 20:46:43 by aramos           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	philo_init(t_data *data)
 	data->philo = philos;
 	while (i < data->count)
 	{
-		philos[i].id = i + 1;
+		philos[i].id = 1 + i;
 		philos[i].data = data;
 		philos[i].left_fork = &data->forks[i];
 		philos[i].right_fork = &data->forks[(i + 1) % data->count];

@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/05/17 19:34:28 by aramos           ###   ########.fr       */
+/*   Updated: 2025/05/17 20:46:42 by aramos           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,14 @@ int	main(int argc, char **argv)
 	data_init(&data, argv);
 	while (i < data.count)
 	{
-		printf("creating thread [%d]\n", i);
+		printf("creating thread [%d]\n", data.philo[i].id);
 		pthread_create(&data.philo[i].thread, NULL, routine, &data.philo[i]);
 		i++;
 	}
 	i = 0;
 	while (i < data.count)
 	{
-		printf("creating thread [%d]\n", i);
+		printf("joining thread [%d]\n", i);
 		pthread_join(data.philo[i].thread, NULL);
 		i++;
 	}
