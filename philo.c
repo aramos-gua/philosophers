@@ -6,29 +6,59 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/05/16 11:20:15 by alex             ###   ########.fr       */
+/*   Updated: 2025/05/17 14:54:47 by aramos           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	philo_init(t_philo *philo, char **argv)
+void	philo_init(t_data *data)
 {
-	philo->philos = ft_atou(argv[1]);
-	philo->ttd = ft_atou(argv[2]);
-	philo->tte = ft_atou(argv[3]);
-	philo->tts = ft_atou(argv[4]);
+	unsigned int		i;
+	t_philo	*philos;
+
+	i = 0;
+	philos = malloc(data->count * sizeof(t_philo));
+	if (!philos)
+		return ;
+	data->guests = philos;
+	while (i < data->count)
+	{
+		philos[i].id = i + 1; 
+		philos[i].data = data; 
+		philos[i].left_fork = &data->forks[i]; 
+		philos[i].right_fork = &data->forks[(i + 1) % data->count]; 
+		i++;
+	}
+}
+
+void	data_init(t_data *data, char **argv)
+{
+	unsigned int	i;
+
+	i = 0;
+	data->count = ft_atou(argv[1]);
+	data->forks = malloc(data->count * sizeof(pthread_mutex_t));
+	if (!data->forks)
+		return ;
+	data->ttd = ft_atou(argv[2]);
+	data->tte = ft_atou(argv[3]);
+	data->tts = ft_atou(argv[4]);
 	if (argv[5])
-		philo->rounds = ft_atou(argv[5]);
+		data->rounds = ft_atou(argv[5]);
 	else
-		philo->rounds = -1;
+		data->rounds = -1;
+	while (i < data->count)
+		pthread_mutex_init(&data->forks[i++], NULL);
+	philo_init(data);
 }
 
 int	main(int argc, char **argv)
 {
-	t_philo	philo;
+	t_data	data;
 
 	if (argc < 5 || check_args(argc - 1, argv) || argc > 6)
 		return (printf("Usage: ./philo [Int] [TTD] [TTE] [TTS] [Int]\n"), 1);
-	philo_init(&philo, argv);
+	data_init(&data, argv);
+	ft_exit_mutex(&data);
 }

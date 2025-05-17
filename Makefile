@@ -33,7 +33,8 @@ NAME = philo
 SRC = ./philo.c\
 	./libft.c\
 	./atox.c\
-	./error_check.c
+	./error_check.c\
+	./exit.c
 
 OBJ = $(SRC:.c=.o)
 

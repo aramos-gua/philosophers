@@ -1,11 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   mutex_test.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/17 14:15:37 by aramos            #+#    #+#             */
+/*   Updated: 2025/05/17 14:16:53 by aramos           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
 
-int			mails = 0;
+int				mails = 0;
 pthread_mutex_t	mutex;
 
-void	*routine()
+void	*routine(void)
 {
 	for (int i = 0; i < 1000000; i++)
 	{
@@ -18,8 +30,8 @@ void	*routine()
 
 int	main(void)
 {
-	int		i;
-	pthread_t th[4];
+	int			i;
+	pthread_t	th[4];
 
 	i = 0;
 	pthread_mutex_init(&mutex, NULL);

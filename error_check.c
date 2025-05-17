@@ -47,7 +47,7 @@ int	check_args(int options, char **argv)
 	{
 		if (isnt_pos_number(argv[i]) != 0)
 		{
-			printf("Error: Only possitive numbers as arguments\n");
+			printf("Error: %s is not a valid positive number\n", argv[i]);
 			return (1);
 		}
 		if (off_bounds(argv[i]) != 0)

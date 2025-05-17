@@ -65,24 +65,11 @@ long	ft_atoln(const char *str)
 unsigned int	ft_atou(const char *str)
 {
 	unsigned int	num;
-	int				sign;
 
-	sign = 1;
 	num = 0;
 	while ((*str > 8 && *str < 14) || *str == ' ')
 		str++;
-	while (*str == '-' || *str == '+')
-	{
-		if (*str == '-')
-			sign *= -1;
-		if (*(str + 1) && ft_isdigit(*(str + 1)))
-		{
-			str++;
-			break ;
-		}
-		return (0);
-	}
 	while (ft_isdigit(*str))
 		num = num * 10 + (*str++ - '0');
-	return (num * sign);
+	return (num);
 }
