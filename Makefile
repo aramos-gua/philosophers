@@ -31,6 +31,7 @@ NAME = philo
 
 # Files
 SRC = ./philo.c\
+	  ./init.c\
 	./libft.c\
 	./atox.c\
 	./error_check.c\

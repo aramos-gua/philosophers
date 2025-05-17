@@ -6,7 +6,7 @@
 /*   By: alex <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:57:01 by alex              #+#    #+#             */
-/*   Updated: 2025/05/17 14:53:37 by aramos           ###   ########.fr       */
+/*   Updated: 2025/05/17 15:11:32 by aramos           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@
 # include <stdio.h>
 # include <time.h>
 
-typedef struct philo t_philo;
+typedef struct philo	t_philo;
 
 typedef struct s_data
 {
-	t_philo			*guests;
+	t_philo			*philo;
 	unsigned int	count;
 	unsigned int	ttd;
 	unsigned int	tte;
@@ -48,6 +48,9 @@ typedef struct philo
 	pthread_mutex_t	*right_fork;
 	t_data			*data;
 }	t_philo;
+// Init
+void			data_init(t_data *data, char **argv);
+void			philo_init(t_data *data);
 
 // Libft functions
 int				ft_isdigit(int c);
