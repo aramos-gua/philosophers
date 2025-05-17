@@ -6,15 +6,20 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/05/17 15:11:08 by aramos           ###   ########.fr       */
+/*   Updated: 2025/05/17 19:34:28 by aramos           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	*routine(void)
+void	*routine(void *arg)
 {
-	printf("Doing something\n");
+	t_philo	*philo;
+
+	philo = (t_philo *)arg;
+	pthread_mutex_lock(&philo->data->print_lock);
+	printf("Doing something -> %d\n", philo->id);
+	pthread_mutex_unlock(&philo->data->print_lock);
 	return (NULL);
 }
 
@@ -29,7 +34,15 @@ int	main(int argc, char **argv)
 	data_init(&data, argv);
 	while (i < data.count)
 	{
-		pthread_create(&data.philo[i].thread, NULL, (void *)routine, &data.philo[i]);
+		printf("creating thread [%d]\n", i);
+		pthread_create(&data.philo[i].thread, NULL, routine, &data.philo[i]);
+		i++;
+	}
+	i = 0;
+	while (i < data.count)
+	{
+		printf("creating thread [%d]\n", i);
+		pthread_join(data.philo[i].thread, NULL);
 		i++;
 	}
 	ft_exit_mutex(&data);

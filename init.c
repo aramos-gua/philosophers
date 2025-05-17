@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 15:07:50 by aramos            #+#    #+#             */
-/*   Updated: 2025/05/17 15:08:23 by aramos           ###   ########.fr       */
+/*   Updated: 2025/05/17 19:26:42 by aramos           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ void	data_init(t_data *data, char **argv)
 		data->rounds = ft_atou(argv[5]);
 	else
 		data->rounds = -1;
+	pthread_mutex_init(&data->print_lock, NULL);
+	pthread_mutex_init(&data->sim_lock, NULL);
 	while (i < data->count)
 		pthread_mutex_init(&data->forks[i++], NULL);
 	philo_init(data);
