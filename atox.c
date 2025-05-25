@@ -23,16 +23,13 @@ int	ft_atoi(const char *nptr)
 		nptr++;
 	while (*nptr == '-' || *nptr == '+')
 	{
+		if (!ft_isdigit(*(nptr + 1)))
+			return (0);
 		if (*nptr == '-')
 			sign *= -1;
-		if (*(nptr + 1) >= '0' && *(nptr + 1) <= '9')
-		{
-			nptr++;
-			break ;
-		}
-		return (0);
+		nptr++;
 	}
-	while (*nptr >= '0' && *nptr <= '9')
+	while (ft_isdigit(*nptr))
 		num = num * 10 + (*nptr++ - '0');
 	return (num * sign);
 }

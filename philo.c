@@ -12,14 +12,44 @@
 
 #include "philo.h"
 
+void	print_log(t_philo *philo, const char *str)
+{
+	unsigned long	timestamp;
+
+	pthread_mutex_lock(&philo->data->print_lock);
+	if (philo->data->simulation_end)
+	{
+
+	}
+}
+
 void	*routine(void *arg)
 {
 	t_philo	*philo;
+	t_data	*data;
 
 	philo = (t_philo *)arg;
-	pthread_mutex_lock(&philo->data->print_lock);
-	printf("Doing something -> %d\n", philo->id);
-	pthread_mutex_unlock(&philo->data->print_lock);
+	data = philo->data;
+	while (1)
+	{
+		pthread_mutex_lock(philo->left_fork);
+		print_log(philo, "has taken a fork");
+		pthread_mutex_lock(philo->right_fork);
+		print_log(philo, "has taken a fork");
+		pthread_mutex_lock(&data->sim_lock);
+		philo->last_meal = get_time_ms();
+		print_log(philo, "is eating");
+		pthread_mutex_unlock(&data->sim_lock);
+		usleep(data->tte * 1000);
+		philo->meals_eaten++;
+		pthread_mutex_unlock(philo->left_fork);
+		pthread_mutex_unlock(philo->right_fork);
+		if (data->rounds != -1 && philo->meals_eaten >= data->rounds)
+			break ;
+		print_log(philo, "is sleeping");
+		usleep(data->tts * 1000);
+		print_log(philo, "is  thinking");
+	}
 	return (NULL);
 }
 
@@ -31,6 +61,7 @@ int	main(int argc, char **argv)
 	i = 0;
 	if (argc < 5 || check_args(argc - 1, argv) || argc > 6)
 		return (printf("Usage: ./philo [Int] [TTD] [TTE] [TTS] [Int]\n"), 1);
+	data.start_time = get_time_ms();
 	data_init(&data, argv);
 	while (i < data.count)
 	{

@@ -12,6 +12,14 @@
 
 #include "philo.h"
 
+unsigned long	get_time_ms(void)
+{
+	struct timeval	tv;
+
+	gettimeofdat(&tv, NULL);
+	return ((tv.tv.sec * 1000UL) + (tv.tv_usec / 1000));
+}
+
 void	philo_init(t_data *data)
 {
 	unsigned int		i;
@@ -40,7 +48,10 @@ void	data_init(t_data *data, char **argv)
 	data->count = ft_atou(argv[1]);
 	data->forks = malloc(data->count * sizeof(pthread_mutex_t));
 	if (!data->forks)
+	{
+		printf("Error: Malloc Failed\n");
 		return ;
+	}
 	data->ttd = ft_atou(argv[2]);
 	data->tte = ft_atou(argv[3]);
 	data->tts = ft_atou(argv[4]);

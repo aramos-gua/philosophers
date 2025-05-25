@@ -38,7 +38,7 @@ typedef struct s_data
 	pthread_mutex_t	sim_lock;
 }	t_data;
 
-typedef struct philo
+typedef struct s_philo
 {
 	int				id;
 	unsigned int	meals_eaten;
@@ -48,9 +48,11 @@ typedef struct philo
 	pthread_mutex_t	*right_fork;
 	t_data			*data;
 }	t_philo;
+
 // Init
 void			data_init(t_data *data, char **argv);
 void			philo_init(t_data *data);
+unsigned long	get_time_ms(void);
 
 // Libft functions
 int				ft_isdigit(int c);
