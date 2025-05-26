@@ -16,8 +16,8 @@ unsigned long	get_time_ms(void)
 {
 	struct timeval	tv;
 
-	gettimeofdat(&tv, NULL);
-	return ((tv.tv.sec * 1000UL) + (tv.tv_usec / 1000));
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000UL) + (tv.tv_usec / 1000));
 }
 
 void	philo_init(t_data *data)

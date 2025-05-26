@@ -15,11 +15,23 @@
 
 # include <pthread.h>
 # include <limits.h>
+# include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>
-# include <time.h>
+# include <sys/time.h>
 
-typedef struct philo	t_philo;
+typedef struct s_data t_data;
+
+typedef struct s_philo
+{
+	int				id;
+	unsigned int	meals_eaten;
+	unsigned long	last_meal;
+	pthread_t		thread;
+	pthread_mutex_t	*left_fork;
+	pthread_mutex_t	*right_fork;
+	t_data			*data;
+}	t_philo;
 
 typedef struct s_data
 {
@@ -37,17 +49,6 @@ typedef struct s_data
 	pthread_mutex_t	print_lock;
 	pthread_mutex_t	sim_lock;
 }	t_data;
-
-typedef struct s_philo
-{
-	int				id;
-	unsigned int	meals_eaten;
-	unsigned long	last_meal;
-	pthread_t		thread;
-	pthread_mutex_t	*left_fork;
-	pthread_mutex_t	*right_fork;
-	t_data			*data;
-}	t_philo;
 
 // Init
 void			data_init(t_data *data, char **argv);
