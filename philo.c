@@ -99,12 +99,17 @@ int	main(int argc, char **argv)
 	data_init(&data, argv);
 	data.start_time = get_time_ms();
 	while (++i < data.count)
+	{
 		pthread_create(&data.philo[i].thread, NULL, routine, &data.philo[i]);
+	}
 	pthread_create(&monitor, NULL, (void *)monitor, &data);
 	pthread_join(monitor, NULL);
 	i = -1;
 	while (++i < data.count)
+	{
+		printf("This is working\n");
 		pthread_join(data.philo[i].thread, NULL);
+	}
 	ft_exit_mutex(&data);
 	return (0);
 }
