@@ -96,7 +96,7 @@ int	main(int argc, char **argv)
 	i = -1;
 	if (argc < 5 || check_args(argc - 1, argv) || argc > 6)
 		return (printf("Usage: ./philo [Int] [TTD] [TTE] [TTS] [Int]\n"), 1);
-	data_init(&data, argv);
+	data_init(&data, argc, argv);
 	data.start_time = get_time_ms();
 	while (++i < data.count)
 	{

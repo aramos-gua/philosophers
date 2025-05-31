@@ -51,7 +51,7 @@ typedef struct s_data
 }	t_data;
 
 // Init
-void			data_init(t_data *data, char **argv);
+void			data_init(t_data *data, int argc, char **argv);
 void			philo_init(t_data *data);
 unsigned long	get_time_ms(void);
 

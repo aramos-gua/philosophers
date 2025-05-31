@@ -34,13 +34,15 @@ void	philo_init(t_data *data)
 	{
 		philos[i].id = 1 + i;
 		philos[i].data = data;
+		philos[i].last_meal = get_time_ms();
+		philos[i].meals_eaten = 0;
 		philos[i].left_fork = &data->forks[i];
 		philos[i].right_fork = &data->forks[(i + 1) % data->count];
 		i++;
 	}
 }
 
-void	data_init(t_data *data, char **argv)
+void	data_init(t_data *data, int argc, char **argv)
 {
 	unsigned int	i;
 
@@ -55,7 +57,7 @@ void	data_init(t_data *data, char **argv)
 	data->ttd = ft_atou(argv[2]);
 	data->tte = ft_atou(argv[3]);
 	data->tts = ft_atou(argv[4]);
-	if (argv[5])
+	if (argc == 6)
 		data->rounds = ft_atou(argv[5]);
 	else
 		data->rounds = -1;
