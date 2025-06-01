@@ -91,7 +91,7 @@ int	main(int argc, char **argv)
 {
 	unsigned int	i;
 	t_data			data;
-	pthread_t		monitor;
+	pthread_t		monitor_thread;
 
 	i = -1;
 	if (argc < 5 || check_args(argc - 1, argv) || argc > 6)
@@ -102,12 +102,11 @@ int	main(int argc, char **argv)
 	{
 		pthread_create(&data.philo[i].thread, NULL, routine, &data.philo[i]);
 	}
-	pthread_create(&monitor, NULL, (void *)monitor, &data);
-	pthread_join(monitor, NULL);
+	pthread_create(&monitor_thread, NULL, (void *)monitor, &data);
+	pthread_join(monitor_thread, NULL);
 	i = -1;
 	while (++i < data.count)
 	{
-		printf("This is working\n");
 		pthread_join(data.philo[i].thread, NULL);
 	}
 	ft_exit_mutex(&data);
