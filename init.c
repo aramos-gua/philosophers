@@ -23,21 +23,21 @@ unsigned long	get_time_ms(void)
 void	philo_init(t_data *data)
 {
 	unsigned int		i;
-	t_philo				*philos;
+	t_philo				*philo;
 
 	i = 0;
-	philos = malloc(data->count * sizeof(t_philo));
-	if (!philos)
+	philo = malloc(data->count * sizeof(t_philo));
+	if (!philo)
 		return ;
-	data->philo = philos;
+	data->philo = philo;
 	while (i < data->count)
 	{
-		philos[i].id = 1 + i;
-		philos[i].data = data;
-		philos[i].last_meal = get_time_ms();
-		philos[i].meals_eaten = 0;
-		philos[i].left_fork = &data->forks[i];
-		philos[i].right_fork = &data->forks[(i + 1) % data->count];
+		philo[i].id = 1 + i;
+		philo[i].data = data;
+		philo[i].last_meal = get_time_ms();
+		philo[i].meals_eaten = 0;
+		philo[i].left_fork = &data->forks[i];
+		philo[i].right_fork = &data->forks[(i + 1) % data->count];
 		i++;
 	}
 }
