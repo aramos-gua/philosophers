@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/05/17 20:46:42 by aramos           ###   ########.fr       */
+/*   Updated: 2025/06/29 15:31:12 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,13 @@ void	*monitor(void *arg)
 	t_data			*data;
 	unsigned int	i;
 	unsigned long	now;
+	unsigned int	done_eating;
 
 	data = (t_data *)arg;
 	while (1)
 	{
 		i = 0;
+		done_eating = 0;
 		while (i < data->count)
 		{
 			pthread_mutex_lock(&data->sim_lock);
@@ -35,10 +37,19 @@ void	*monitor(void *arg)
 				pthread_mutex_unlock(&data->print_lock);
 				return (NULL);
 			}
+			if (data->rounds != -1 && data->philo[i].meals_eaten >= (unsigned int)data->rounds)
+				done_eating++;
 			pthread_mutex_unlock(&data->sim_lock);
 			i++;
-			usleep(1000);
 		}
+		if (data->rounds != -1 && done_eating == data->count)
+		{
+			pthread_mutex_lock(&data->sim_lock);
+			data->simulation_end = 1;
+			pthreaaad_mmutex_unlock(&data->sim_lock);
+			return (NULL);
+		}
+		usleep(1000);
 	}
 }
 
@@ -64,20 +75,40 @@ void	*routine(void *arg)
 
 	philo = (t_philo *)arg;
 	data = philo->data;
+	if (data->count == 1)
+	{
+		pthread_mutex_lock(philo->left_fork);
+		print_log(philo, "has taken a fork");
+		usleep(data->ttd * 1000);
+		pthread_mutex_unlock(philo->left_fork);
+		return (NULL);
+	}
 	while (1)
 	{
+		pthread_mutex_lock(&data->sim_lock);
+		if (data->simulation_end)
+		{
+			pthread_mutex_unlock(&data->sim_lock);
+			break ;
+		}
+		pthread_mutex_unlock(&data->sim_lock);
+
 		pthread_mutex_lock(philo->left_fork);
 		print_log(philo, "has taken a fork");
 		pthread_mutex_lock(philo->right_fork);
 		print_log(philo, "has taken a fork");
+
 		pthread_mutex_lock(&data->sim_lock);
 		philo->last_meal = get_time_ms();
 		print_log(philo, "is eating");
 		pthread_mutex_unlock(&data->sim_lock);
+
 		usleep(data->tte * 1000);
 		philo->meals_eaten++;
+
 		pthread_mutex_unlock(philo->left_fork);
 		pthread_mutex_unlock(philo->right_fork);
+
 		if (data->rounds != -1 && philo->meals_eaten >= (unsigned int)data->rounds)
 			break ;
 		print_log(philo, "is sleeping");
