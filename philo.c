@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/06/29 15:31:12 by alex             ###   ########.fr       */
+/*   Updated: 2025/06/29 15:34:29 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	*monitor(void *arg)
 		{
 			pthread_mutex_lock(&data->sim_lock);
 			data->simulation_end = 1;
-			pthreaaad_mmutex_unlock(&data->sim_lock);
+			pthread_mutex_unlock(&data->sim_lock);
 			return (NULL);
 		}
 		usleep(1000);
