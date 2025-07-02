@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/06/29 15:34:29 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/02 08:26:31 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,13 +104,17 @@ void	*routine(void *arg)
 		pthread_mutex_unlock(&data->sim_lock);
 
 		usleep(data->tte * 1000);
+
+		pthread_mutex_lock(&data->sim_lock);
 		philo->meals_eaten++;
+		pthread_mutex_unlock(&data->sim_lock);
+
 
 		pthread_mutex_unlock(philo->left_fork);
 		pthread_mutex_unlock(philo->right_fork);
 
 		if (data->rounds != -1 && philo->meals_eaten >= (unsigned int)data->rounds)
-			break ;
+			continue ;
 		print_log(philo, "is sleeping");
 		usleep(data->tts * 1000);
 		print_log(philo, "is  thinking");
