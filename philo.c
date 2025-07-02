@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/02 08:26:31 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/02 08:48:37 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@ void	*monitor(void *arg)
 	data = (t_data *)arg;
 	while (1)
 	{
+		pthread_mutex_lock(&data->sim_lock);
 		i = 0;
 		done_eating = 0;
+		now = get_time_ms();
 		while (i < data->count)
 		{
-			pthread_mutex_lock(&data->sim_lock);
-			now = get_time_ms();
 			if ((now - data->philo[i].last_meal) > data->ttd)
 			{
 				data->simulation_end = 1;
@@ -39,16 +39,15 @@ void	*monitor(void *arg)
 			}
 			if (data->rounds != -1 && data->philo[i].meals_eaten >= (unsigned int)data->rounds)
 				done_eating++;
-			pthread_mutex_unlock(&data->sim_lock);
 			i++;
 		}
 		if (data->rounds != -1 && done_eating == data->count)
 		{
-			pthread_mutex_lock(&data->sim_lock);
 			data->simulation_end = 1;
 			pthread_mutex_unlock(&data->sim_lock);
 			return (NULL);
 		}
+		pthread_mutex_unlock(&data->sim_lock);
 		usleep(1000);
 	}
 }
@@ -66,6 +65,13 @@ void	print_log(t_philo *philo, const char *str)
 	timestamp = get_time_ms() - philo->data->start_time;
 	printf("%lu %d %s\n", timestamp, philo->id, str);
 	pthread_mutex_unlock(&philo->data->print_lock);
+}
+
+void	smart_sleep(unsigned int duration, t_data *data)
+{
+	unsigned long	start = get_time_ms();
+	while (!data->simulation_end && get_time_ms() - start < duration)
+		usleep(100);
 }
 
 void	*routine(void *arg)
@@ -100,10 +106,10 @@ void	*routine(void *arg)
 
 		pthread_mutex_lock(&data->sim_lock);
 		philo->last_meal = get_time_ms();
-		print_log(philo, "is eating");
 		pthread_mutex_unlock(&data->sim_lock);
+		print_log(philo, "is eating");
 
-		usleep(data->tte * 1000);
+		smart_sleep(data->tte, data);
 
 		pthread_mutex_lock(&data->sim_lock);
 		philo->meals_eaten++;
@@ -114,10 +120,13 @@ void	*routine(void *arg)
 		pthread_mutex_unlock(philo->right_fork);
 
 		if (data->rounds != -1 && philo->meals_eaten >= (unsigned int)data->rounds)
-			continue ;
+		{
+			return (NULL);
+		}
 		print_log(philo, "is sleeping");
-		usleep(data->tts * 1000);
+		smart_sleep(data->tts, data);
 		print_log(philo, "is  thinking");
+		smart_sleep(1, data);
 	}
 	return (NULL);
 }
