@@ -74,87 +74,102 @@ void	smart_sleep(unsigned int duration, t_data *data)
 		usleep(100);
 }
 
-void	*routine(void *arg)
+void  sim_delay(time_t start_time)
+{
+  while (get_time_ms() < start_time)
+    continue ;
+}
+
+void  eat_sleep_routine(t_philo *philo)
+{
+  pthread_mutex_lock(&philo->data->right_fork)
+  printf("philo grabbed right fork");
+  pthread_mutex_lock(&philo->data->left_fork)
+  printf("philo grabbed left fork");
+  printf("philo is eating");
+  pthread_mutex_lock(&philo->meal_time_lock);
+  philo->last_meal = get_time_ms();
+  pthread_mutex_unlock(&philo->meal_time_lock);
+  philo_sleep(philo->data, philo->data->tte);
+  if (sim_stopped(philo->data) == false)__
+  {
+    pthread_mutex_lock(&philo->meal_time_lock);
+    philo->meals_eaten += 1;
+    pthread_mutex_unlock(&philo->meal_time_lock);
+  }
+  printf("philo is sleeping");
+    pthread_mutex_unlock(&philo->data->left_fork);
+    pthread_mutex_unlock(&philo->data->right_fork);
+  philo_sleep(philo->data, philo->data->tts);
+}
+
+void  think_routine(t_philo *philo, bool silent)
+{
+  time_t  ttt;
+
+  pthread_mutex_lock(&philo->meal_time_lock);
+  ttt = (philo->data->ttd - (get_time_ms() - philo->last_meal) - philo->data->tte) / 2;
+  pthread_mutex_unlock(&philo->meal_time_lock);
+  if (ttt < 0)
+    ttt = 0;
+  if (ttt == 0 && silent == true)
+    ttt = 1;
+  if (ttt > 600)
+    ttt = 200;
+  if (silen == false)
+    printf("philo is thinking");
+  philo_sleep(philo->data, ttt);
+}
+
+
+void	*routine(void *data)
 {
 	t_philo	*philo;
-	t_data	*data;
 
-	philo = (t_philo *)arg;
-	data = philo->data;
-	if (data->count == 1)
-	{
-		pthread_mutex_lock(philo->left_fork);
-		print_log(philo, "has taken a fork");
-		usleep(data->ttd * 1000);
-		pthread_mutex_unlock(philo->left_fork);
-		return (NULL);
-	}
-	while (1)
-	{
-		pthread_mutex_lock(&data->sim_lock);
-		if (data->simulation_end)
-		{
-			pthread_mutex_unlock(&data->sim_lock);
-			break ;
-		}
-		pthread_mutex_unlock(&data->sim_lock);
-
-		pthread_mutex_lock(philo->left_fork);
-		print_log(philo, "has taken a fork");
-		pthread_mutex_lock(philo->right_fork);
-		print_log(philo, "has taken a fork");
-
-		pthread_mutex_lock(&data->sim_lock);
-		philo->last_meal = get_time_ms();
-		pthread_mutex_unlock(&data->sim_lock);
-		print_log(philo, "is eating");
-
-		smart_sleep(data->tte, data);
-
-		pthread_mutex_lock(&data->sim_lock);
-		philo->meals_eaten++;
-		pthread_mutex_unlock(&data->sim_lock);
-
-
-		pthread_mutex_unlock(philo->left_fork);
-		pthread_mutex_unlock(philo->right_fork);
-
-		if (data->rounds != -1 && philo->meals_eaten >= (unsigned int)data->rounds)
-		{
-			return (NULL);
-		}
-		print_log(philo, "is sleeping");
-		smart_sleep(data->tts, data);
-		print_log(philo, "is  thinking");
-		smart_sleep(1, data);
-	}
-	return (NULL);
+	philo = (t_philo *)data;
+	if (philo->data->rounds == 0)
+    return (NULL);
+  pthread_mutex_lock(&philo->meal_time_lock);
+  philo->last_meal = philo->data->start_time;
+  pthread_mutex_unlock(&philo->meal_time_lock);
+  sim_delay(philo->data->start_time);
+  if (philo->data->ttd == 0)
+    return (NULL);
+  if (philo->data->count == 1)
+    (printf("insert only 1 philo version and return\n"));
+  else if (philo->count % 2)
+      think_routine(philo, true);
+  while (sim_stopped(philo->data) == false)
+  {
+    eat_sleep_routine(philo);
+    think_routine(philo, false);
+  }
+  return (NULL);
 }
 
 int	main(int argc, char **argv)
 {
 	unsigned int	i;
 	t_data			data;
-	pthread_t		monitor_thread;
 
 	i = -1;
 	if (argc < 5 || check_args(argc - 1, argv) || argc > 6)
 		return (printf("Usage: ./philo [No. of philosophers] [TTD] [TTE] [TTS] [No. of rounds]\n"), 1);
 	data_init(&data, argc, argv);
-	data.start_time = get_time_ms();
+  data.start_time = get_time_ms() + (data.count * 2 * 10);
 	while (++i < data.count)
 	{
 		pthread_create(&data.philo[i].thread, NULL, routine, &data.philo[i]);
 	}
 	if (data.count > 1)
-		pthread_create(&monitor_thread, NULL, (void *)monitor, &data);
+		pthread_create(&data.monitor, NULL, &monitor, &data);//check monitor thread
 	i = -1;
 	while (++i < data.count)
 	{
 		pthread_join(data.philo[i].thread, NULL);
 	}
 	if (data.count > 1)
-		pthread_join(monitor_thread, NULL);
+		pthread_join(data.monitor, NULL);
 	ft_exit_mutex(&data);
 	return (0);
 }

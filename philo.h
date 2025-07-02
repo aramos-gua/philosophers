@@ -30,6 +30,7 @@ typedef struct s_philo
 	pthread_t		thread;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
+	pthread_mutex_t	meal_time_lock;
 	t_data			*data;
 }	t_philo;
 
@@ -44,6 +45,8 @@ typedef struct s_data
 
 	unsigned long	start_time;
 	int				simulation_end;
+
+  pthread_t       monitor;
 
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print_lock;
