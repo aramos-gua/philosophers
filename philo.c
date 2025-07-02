@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/02 08:48:37 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/02 15:55:08 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,13 +146,15 @@ int	main(int argc, char **argv)
 	{
 		pthread_create(&data.philo[i].thread, NULL, routine, &data.philo[i]);
 	}
-	pthread_create(&monitor_thread, NULL, (void *)monitor, &data);
-	pthread_join(monitor_thread, NULL);
+	if (data.count > 1)
+		pthread_create(&monitor_thread, NULL, (void *)monitor, &data);
 	i = -1;
 	while (++i < data.count)
 	{
 		pthread_join(data.philo[i].thread, NULL);
 	}
+	if (data.count > 1)
+		pthread_join(monitor_thread, NULL);
 	ft_exit_mutex(&data);
 	return (0);
 }
