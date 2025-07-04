@@ -6,7 +6,7 @@
 /*   By: alex <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:57:01 by alex              #+#    #+#             */
-/*   Updated: 2025/05/17 20:46:41 by aramos           ###   ########.fr       */
+/*   Updated: 2025/07/03 08:30:45 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <sys/time.h>
+# include <stdbool.h>
 
 typedef struct s_data t_data;
 
@@ -45,6 +46,7 @@ typedef struct s_data
 
 	unsigned long	start_time;
 	int				simulation_end;
+	bool		sim_stop;
 
   pthread_t       monitor;
 
