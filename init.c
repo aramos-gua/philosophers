@@ -12,12 +12,13 @@
 
 #include "philo.h"
 
-unsigned long	get_time_ms(void)
+size_t	get_time(void)
 {
-	struct timeval	tv;
+	struct timeval	time;
 
-	gettimeofday(&tv, NULL);
-	return ((tv.tv_sec * 1000UL) + (tv.tv_usec / 1000));
+	if (gettimeofday(&time, NULL) == -1)
+		write(2, "Error/time: Fetch Error\n", 24);
+	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
 
 void	philo_init(t_data *data)
@@ -37,7 +38,7 @@ void	philo_init(t_data *data)
 	{
 		philo[i].id = 1 + i;//dont know if i need this
 		philo[i].data = data;
-		philo[i].last_meal = get_time_ms();//dont know if this is  a good place to init this thIS
+		philo[i].last_meal = get_time();//dont know if this is  a good place to init this thIS
 		philo[i].meals_eaten = 0;
 		philo[i].left_fork = &data->forks[i];
 		philo[i].right_fork = &data->forks[(i + 1) % data->count];
