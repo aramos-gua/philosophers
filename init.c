@@ -28,13 +28,16 @@ void	philo_init(t_data *data)
 	i = 0;
 	philo = malloc(data->count * sizeof(t_philo));
 	if (!philo)
-		return ;
+	{
+		ft_exit_mutex(data);
+		error_message("Error/philo: Malloc Failed\n");
+	}
 	data->philo = philo;
 	while (i < data->count)
 	{
-		philo[i].id = 1 + i;
+		philo[i].id = 1 + i;//dont know if i need this
 		philo[i].data = data;
-		philo[i].last_meal = get_time_ms();
+		philo[i].last_meal = get_time_ms();//dont know if this is  a good place to init this thIS
 		philo[i].meals_eaten = 0;
 		philo[i].left_fork = &data->forks[i];
 		philo[i].right_fork = &data->forks[(i + 1) % data->count];
@@ -50,10 +53,7 @@ void	data_init(t_data *data, int argc, char **argv)
 	data->count = ft_atou(argv[1]);
 	data->forks = malloc(data->count * sizeof(pthread_mutex_t));
 	if (!data->forks)
-	{
-		printf("Error: Malloc Failed\n");
-		return ;
-	}
+		error_message("Error/init: Malloc Failed\n");
 	data->ttd = ft_atou(argv[2]);
 	data->tte = ft_atou(argv[3]);
 	data->tts = ft_atou(argv[4]);

@@ -21,6 +21,14 @@ void	ft_exit_mutex(t_data *data)
 	pthread_mutex_destroy(&data->sim_lock);
 	while (i < data->count)
 		pthread_mutex_destroy(&data->forks[i++]);
-	free(data->forks);
-	free(data->philo);
+	if (data->forks)
+		free(data->forks);
+	if (data->philo)
+		free(data->philo);
+}
+
+int	error_message(char *str)
+{
+	printf("%s", str);
+	return (EXIT_FAILURE);
 }

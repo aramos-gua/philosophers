@@ -33,7 +33,7 @@ bool	has_simulation_stopped(t_data *data)
 	pthread_mutex_lock(&data->sim_lock);
 	if (data->sim_stop == true)
 		r = true;
-	pthread_mutex_unlock(&data>sim_lock);
+	pthread_mutex_unlock(&data->sim_lock);
 	return (r);
 }
 
@@ -61,13 +61,13 @@ bool	end_condition_reached(t_data *data)
 	i = 0;
 	while (i < data->count)
 	{
-		pthread_mutex_lock(*data->philo[i]->meal_time_lock);
-		if (kill_philo(data->philo[i]))
+		pthread_mutex_lock(&data->philo[i].meal_time_lock);
+		if (kill_philo(&data->philo[i]))
 			return (true);
 		if (data->rounds != -1)
-			if (data->philo[i].times_ate < (unsigned int)data->rounds)
+			if (data->philo[i].meals_eaten < (unsigned int)data->rounds)
 				all_ate_enough = false;
-		pthread_mutex_unlock(&data->philo[i]->meal_time_lock);
+		pthread_mutex_unlock(&data->philo[i].meal_time_lock);
 		i++;
 	}
 	if (data->rounds != -1 && all_ate_enough == true)
@@ -133,9 +133,9 @@ void	philo_sleep(t_data *data, unsigned int sleep_time)
 
 void  eat_sleep_routine(t_philo *philo)
 {
-  pthread_mutex_lock(&philo->data->right_fork);
+  pthread_mutex_lock(philo->right_fork);
   printf("philo grabbed right fork");
-  pthread_mutex_lock(&philo->data->left_fork);
+  pthread_mutex_lock(philo->left_fork);
   printf("philo grabbed left fork");
   printf("philo is eating");
   pthread_mutex_lock(&philo->meal_time_lock);
@@ -188,9 +188,9 @@ void	*routine(void *data)
     return (NULL);
   if (philo->data->count == 1)
     (printf("insert only 1 philo version and return\n"));
-  else if (philo>(t_data)data->count % 2)
+  else if (philo->data->count % 2)
       think_routine(philo, true);
-  while (sim_stopped(philo->data) == false)
+  while (has_simulation_stopped(philo->data) == false)
   {
     eat_sleep_routine(philo);
     think_routine(philo, false);
@@ -205,22 +205,23 @@ int	main(int argc, char **argv)
 
 	i = -1;
 	if (argc < 5 || check_args(argc - 1, argv) || argc > 6)
-		return (printf("Usage: ./philo [No. of philosophers] [TTD] [TTE] [TTS] [No. of rounds]\n"), 1);
+		return (printf("%s", USAGE), EXIT_FAILURE);
 	data_init(&data, argc, argv);
-  data.start_time = get_time_ms() + (data.count * 2 * 10);
+	data.start_time = get_time_ms() + (data.count * 2 * 10);//why, tho?
+	if (data.count > 1)
+		pthread_create(&data.monitor, NULL, &monitor, &data);
 	while (++i < data.count)
 	{
-		pthread_create(&data.philo[i].thread, NULL, routine, &data.philo[i]);
+		if (pthread_create(&data.philo[i].thread, NULL, routine, &data.philo[i]) != 0)
+			break ;
 	}
-	if (data.count > 1)
-		pthread_create(&data.monitor, NULL, &monitor, &data);//check monitor thread
 	i = -1;
+	if (data.count > 1)
+		pthread_join(data.monitor, NULL);
 	while (++i < data.count)
 	{
 		pthread_join(data.philo[i].thread, NULL);
 	}
-	if (data.count > 1)
-		pthread_join(data.monitor, NULL);
 	ft_exit_mutex(&data);
-	return (0);
+	return (EXIT_SUCCESS);
 }

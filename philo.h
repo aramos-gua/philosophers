@@ -12,6 +12,8 @@
 
 #ifndef PHILO_H
 # define PHILO_H
+# define USAGE "Usage: ./philo [Number of philosophers] [Time To Die]\
+[Time To Eat] [Time To Sleep] [Number of times they eat]\n"
 
 # include <pthread.h>
 # include <limits.h>
@@ -47,9 +49,7 @@ typedef struct s_data
 	unsigned long	start_time;
 	int				simulation_end;
 	bool		sim_stop;
-
-  pthread_t       monitor;
-
+	pthread_t       monitor;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print_lock;
 	pthread_mutex_t	sim_lock;
@@ -68,4 +68,5 @@ unsigned int	ft_atou(const char *str);
 // Error handling 
 int				check_args(int options, char **argv);
 void			ft_exit_mutex(t_data *data);
+int				error_message(char *str);
 #endif
