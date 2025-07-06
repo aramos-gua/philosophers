@@ -41,6 +41,7 @@ void	philo_init(t_data *data)
 		philo[i].meals_eaten = 0;
 		philo[i].left_fork = &data->forks[i];
 		philo[i].right_fork = &data->forks[(i + 1) % data->count];
+		//pthread_mutex_init(&philo[i].meal_time_lock, NULL);
 		i++;
 	}
 }
@@ -57,6 +58,7 @@ void	data_init(t_data *data, int argc, char **argv)
 	data->ttd = ft_atou(argv[2]);
 	data->tte = ft_atou(argv[3]);
 	data->tts = ft_atou(argv[4]);
+	//data->sim_stop = false;
 	if (argc == 6)
 		data->rounds = ft_atou(argv[5]);
 	else

@@ -45,7 +45,7 @@ bool	kill_philo(t_philo *philo)
 	if ((time - philo->last_meal) >= philo->data->ttd)
 	{
 		set_sim_stop_flag(philo->data, true);
-		printf("philo died");
+		printf("philo [%d] died\n", philo->id);
 		pthread_mutex_unlock(&philo->meal_time_lock);
 		return (true);
 	}
@@ -134,10 +134,10 @@ void	philo_sleep(t_data *data, unsigned int sleep_time)
 void  eat_sleep_routine(t_philo *philo)
 {
   pthread_mutex_lock(philo->right_fork);
-  printf("philo grabbed right fork");
+  printf("philo [%d] grabbed right fork\n", philo->id);
   pthread_mutex_lock(philo->left_fork);
-  printf("philo grabbed left fork");
-  printf("philo is eating");
+  printf("philo [%d] grabbed left fork\n", philo->id);
+  printf("philo [%d] is eating\n", philo->id);
   pthread_mutex_lock(&philo->meal_time_lock);
   philo->last_meal = get_time_ms();
   pthread_mutex_unlock(&philo->meal_time_lock);
@@ -148,7 +148,7 @@ void  eat_sleep_routine(t_philo *philo)
     philo->meals_eaten += 1;
     pthread_mutex_unlock(&philo->meal_time_lock);
   }
-  printf("philo is sleeping");
+  printf("philo [%d]  is sleeping\n", philo->id);
     pthread_mutex_unlock(philo->left_fork);
     pthread_mutex_unlock(philo->right_fork);
   philo_sleep(philo->data, philo->data->tts);
@@ -168,7 +168,7 @@ void  think_routine(t_philo *philo, bool silent)
   if (ttt > 600)
     ttt = 200;
   if (silent == false)
-    printf("philo is thinking");
+    printf("philo [%d] is thinking\n", philo->id);
   philo_sleep(philo->data, ttt);
 }
 
@@ -179,23 +179,25 @@ void	*routine(void *data)
 
 	philo = (t_philo *)data;
 	if (philo->data->rounds == 0)
-    return (NULL);
-  pthread_mutex_lock(&philo->meal_time_lock);
-  philo->last_meal = philo->data->start_time;
-  pthread_mutex_unlock(&philo->meal_time_lock);
-  sim_delay(philo->data->start_time);
-  if (philo->data->ttd == 0)
-    return (NULL);
-  if (philo->data->count == 1)
-    (printf("insert only 1 philo version and return\n"));
-  else if (philo->data->count % 2)
-      think_routine(philo, true);
-  while (has_simulation_stopped(philo->data) == false)
-  {
-    eat_sleep_routine(philo);
-    think_routine(philo, false);
-  }
-  return (NULL);
+		return (NULL);
+	//pthread_mutex_lock(&philo->meal_time_lock);
+	//philo->last_meal = philo->data->start_time;
+	//pthread_mutex_unlock(&philo->meal_time_lock);
+	//sim_delay(philo->data->start_time);
+	if (philo->data->ttd == 0)
+		return (NULL);
+	if (philo->data->count == 1)
+		(printf("insert only 1 philo version and return\n"));
+	//else if (philo->data->count % 2)
+	think_routine(philo, true);
+	eat_sleep_routine(philo);
+	think_routine(philo, false);
+	//while (has_simulation_stopped(philo->data) == false)
+	//{
+	//	eat_sleep_routine(philo);
+	//	think_routine(philo, false);
+	//}
+	return (NULL);
 }
 
 int	main(int argc, char **argv)
@@ -208,20 +210,20 @@ int	main(int argc, char **argv)
 		return (printf("%s", USAGE), EXIT_FAILURE);
 	data_init(&data, argc, argv);
 	data.start_time = get_time_ms() + (data.count * 2 * 10);//why, tho?
-	if (data.count > 1)
-		pthread_create(&data.monitor, NULL, &monitor, &data);
 	while (++i < data.count)
 	{
 		if (pthread_create(&data.philo[i].thread, NULL, routine, &data.philo[i]) != 0)
 			break ;
 	}
-	i = -1;
 	if (data.count > 1)
-		pthread_join(data.monitor, NULL);
+		pthread_create(&data.monitor, NULL, &monitor, &data);
+	i = -1;
 	while (++i < data.count)
 	{
 		pthread_join(data.philo[i].thread, NULL);
 	}
+	if (data.count > 1)
+		pthread_join(data.monitor, NULL);
 	ft_exit_mutex(&data);
 	return (EXIT_SUCCESS);
 }
