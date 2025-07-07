@@ -193,11 +193,11 @@ void	*routine(void *data)
 	think_routine(philo, true);
 	eat_sleep_routine(philo);
 	think_routine(philo, false);
-	//while (has_simulation_stopped(philo->data) == false)
-	//{
-	//	eat_sleep_routine(philo);
-	//	think_routine(philo, false);
-	//}
+	while (has_simulation_stopped(philo->data) == false)
+	{
+		eat_sleep_routine(philo);
+		think_routine(philo, false);
+	}
 	return (NULL);
 }
 
