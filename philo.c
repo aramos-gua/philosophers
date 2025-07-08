@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/08 08:36:04 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/08 08:47:06 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,56 +37,56 @@ void  sim_delay(time_t start_time)
 //	return (r);
 //}
 //
-//bool	kill_philo(t_philo *philo)
-//{
-//	time_t	time;
-//
-//	time = get_time_ms();
-//	if ((time - philo->last_meal) >= philo->data->ttd)
-//	{
-//		set_sim_stop_flag(philo->data, true);
-//		printf("philo [%d] died\n", philo->id);
-//		pthread_mutex_unlock(&philo->meal_time_lock);
-//		return (true);
-//	}
-//	return (false);
-//}
-//
-//bool	end_condition_reached(t_data *data)
-//{
-//	unsigned int	i;
-//	bool	all_ate_enough;
-//
-//	all_ate_enough = true;
-//	i = 0;
-//	while (i < data->count)
-//	{
-//		pthread_mutex_lock(&data->philo[i].meal_time_lock);
-//		if (kill_philo(&data->philo[i]))
-//			return (true);
-//		if (data->rounds != -1)
-//			if (data->philo[i].meals_eaten < (unsigned int)data->rounds)
-//				all_ate_enough = false;
-//		pthread_mutex_unlock(&data->philo[i].meal_time_lock);
-//		i++;
-//	}
-//	if (data->rounds != -1 && all_ate_enough == true)
-//	{
-//		set_sim_stop_flag(data, true);
-//		return (true);
-//	}
-//	return (false);
-//}
+bool	starved(t_philo *philo)
+{
+	time_t	time;
+
+	time = get_time_ms();
+	if ((time - philo->last_meal) >= philo->data->ttd)
+	{
+		set_sim_stop_flag(philo->data, true);
+		printf("philo [%d] died\n", philo->id);
+		pthread_mutex_unlock(&philo->meal_time_lock);
+		return (true);
+	}
+	return (false);
+}
+
+bool	end_condition_reached(t_data *data)
+{
+	unsigned int	i;
+	bool	all_rounds;
+
+	all_rounds = true;
+	i = 0;
+	while (i < data->count)
+	{
+		pthread_mutex_lock(&data->philo[i].meal_time_lock);
+		if (starved(&data->philo[i]))
+			return (true);
+		if (data->rounds != -1)
+			if (data->philo[i].meals_eaten < (unsigned int)data->rounds)
+				all_rounds = false;
+		pthread_mutex_unlock(&data->philo[i].meal_time_lock);
+		i++;
+	}
+	if (data->rounds != -1 && all_rounds == true)
+	{
+		set_sim_stop_flag(data, true);
+		return (true);
+	}
+	return (false);
+}
 
 void	*monitor(void *arg)
 {
 	t_data			*data;
 
+	sim_delay(data->start_time);
 	data = (t_data *)arg;
 	if (data->rounds == 0)
 		return (NULL);
 	set_sim_stop_flag(data, false);
-	sim_delay(data->start_time);
 	while (true)
 	{
 		if (end_condition_reached(data) == true)
