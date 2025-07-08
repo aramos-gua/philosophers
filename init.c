@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 15:07:50 by aramos            #+#    #+#             */
-/*   Updated: 2025/05/17 20:46:43 by aramos           ###   ########.fr       */
+/*   Updated: 2025/07/08 08:38:59 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,13 @@ void	philo_init(t_data *data)
 	data->philo = philo;
 	while (i < data->count)
 	{
-		philo[i].id = 1 + i;//dont know if i need this
+		philo[i].id = 1 + i;
 		philo[i].data = data;
-		philo[i].last_meal = get_time();//dont know if this is  a good place to init this thIS
+		//philo[i].last_meal = get_time();//already set in main with delay
 		philo[i].meals_eaten = 0;
 		philo[i].left_fork = &data->forks[i];
 		philo[i].right_fork = &data->forks[(i + 1) % data->count];
-		//pthread_mutex_init(&philo[i].meal_time_lock, NULL);
+		pthread_mutex_init(&philo[i].meal_time_lock, NULL);
 		i++;
 	}
 }
@@ -59,7 +59,8 @@ void	data_init(t_data *data, int argc, char **argv)
 	data->ttd = ft_atou(argv[2]);
 	data->tte = ft_atou(argv[3]);
 	data->tts = ft_atou(argv[4]);
-	//data->sim_stop = false;
+	data->sim_stop = false;
+	data->simulation_end = 0;
 	if (argc == 6)
 		data->rounds = ft_atou(argv[5]);
 	else

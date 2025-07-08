@@ -6,18 +6,18 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/03 08:53:52 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/08 08:36:04 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-//void  sim_delay(time_t start_time)
-//{
-//  while ((time_t)get_time_ms() < start_time)
-//    continue ;
-//}
-//
+void  sim_delay(time_t start_time)
+{
+  while ((time_t)get_time_ms() < start_time)
+    uspleep(100);
+}
+
 //void	set_sim_stop_flag(t_data *data, bool state)
 //{
 //	pthread_mutex_lock(&data->sim_lock);
@@ -85,14 +85,14 @@ void	*monitor(void *arg)
 	data = (t_data *)arg;
 	if (data->rounds == 0)
 		return (NULL);
-	//set_sim_stop_flag(data, false);
-	//sim_delay(data->start_time);
-	//while (true)
-	//{
-	//	if (end_condition_reached(data) == true)
-	//		return (NULL);
-	//	usleep(1000);
-	//}
+	set_sim_stop_flag(data, false);
+	sim_delay(data->start_time);
+	while (true)
+	{
+		if (end_condition_reached(data) == true)
+			return (NULL);
+		usleep(1000);
+	}
 	return (NULL);
 }
 
@@ -178,13 +178,13 @@ void	*routine(void *data)
 {
 	t_philo	*philo;
 
+	sim_delay(philo->data->start_time);
 	philo = (t_philo *)data;
 	if (philo->data->rounds == 0)
 		return (NULL);
-	//pthread_mutex_lock(&philo->meal_time_lock);
-	//philo->last_meal = philo->data->start_time;
-	//pthread_mutex_unlock(&philo->meal_time_lock);
-	//sim_delay(philo->data->start_time);
+	//pthread_mutex_lock(&philo->meal_time_lock);//No need of this block
+	//philo->last_meal = philo->data->start_time;//because start_time takes
+	//pthread_mutex_unlock(&philo->meal_time_lock);//care of the synch
 	if (philo->data->ttd == 0)
 		return (NULL);
 	if (philo->data->count == 1)
@@ -210,9 +210,10 @@ int	main(int argc, char **argv)
 	if (argc < 5 || check_args(argc - 1, argv) || argc > 6)
 		return (printf("%s", USAGE), EXIT_FAILURE);
 	data_init(&data, argc, argv);
-	data.start_time = get_time() + (data.count * 2 * 10);//why, tho?
+	data.start_time = get_time() + (data.count * 50);
 	while (++i < data.count)
 	{
+		data.philo[i].last_meal = data.start_time;
 		if (pthread_create(&data.philo[i].thread, NULL, routine, &data.philo[i]) != 0)
 			break ;
 	}
