@@ -6,7 +6,7 @@
 /*   By: alex <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:57:01 by alex              #+#    #+#             */
-/*   Updated: 2025/07/03 08:30:45 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/08 17:50:38 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ typedef struct s_data
 // Init
 void			data_init(t_data *data, int argc, char **argv);
 void			philo_init(t_data *data);
-size_t			get_time(void);
+size_t			timestamp(void);
 
 // Libft functions
 int				ft_isdigit(int c);

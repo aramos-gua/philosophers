@@ -6,19 +6,19 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 15:07:50 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/08 08:38:59 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/08 17:47:36 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-size_t	get_time(void)
+size_t	timestamp(void)
 {
 	struct timeval	time;
 
 	if (gettimeofday(&time, NULL) == -1)
 		write(2, "Error/time: Fetch Error\n", 24);
-	return (time.tv_sec * 1000 + time.tv_usec / 1000);
+	return (time.tv_sec * 1000 + (time.tv_usec / 1000));
 }
 
 void	philo_init(t_data *data)
