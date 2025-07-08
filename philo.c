@@ -106,7 +106,7 @@ void	print_log(t_philo *philo, const char *str)
 		pthread_mutex_unlock(&philo->data->print_lock);
 		return ;
 	}
-	timestamp = (unsigned long)(ms_time - philo->data->start_time);
+	timestamp = (unsigned long)(ms_time() - philo->data->start_time);
 	printf("%lu %d %s\n", timestamp, philo->id, str);
 	pthread_mutex_unlock(&philo->data->print_lock);
 }
@@ -125,8 +125,8 @@ void	philo_sleep(t_data *data, unsigned int sleep_time)
 	wake_up = ms_time() + sleep_time;
 	while (ms_time() < wake_up)
 	{
-//		if (has_simulation_stopped(data))
-//			break ;
+		if (has_simulation_stopped(data))
+			break ;
 		usleep(100);
 		printf("printing something %d\n", data->philo[1].id);
 	}
@@ -134,12 +134,22 @@ void	philo_sleep(t_data *data, unsigned int sleep_time)
 
 void  eat_sleep_routine(t_philo *philo)
 {
-	pthread_mutex_lock(philo->right_fork);
-	printf("philo [%d] has taken a fork\n", philo->id);
-	pthread_mutex_lock(philo->left_fork);
-	printf("philo [%d] has taken a fork\n", philo->id);
+	if (philo->id % 2 == 0)
+	{
+		pthread_mutex_lock(philo->right_fork);
+		printf("%lu philo [%d] has taken a fork\n", ms_time(), philo->id);
+		pthread_mutex_lock(philo->left_fork);
+		printf("%lu philo [%d] has taken a fork\n", ms_time(), philo->id);
+	}
+	else
+	{
+		pthread_mutex_lock(philo->left_fork);
+		printf("%lu philo [%d] has taken a fork\n", ms_time(), philo->id);
+		pthread_mutex_lock(philo->right_fork);
+		printf("%lu philo [%d] has taken a fork\n", ms_time(), philo->id);
+	}
 	pthread_mutex_lock(&philo->meal_time_lock);
-	printf("philo [%d] is eating\n", philo->id);
+	printf("%lu philo [%d] is eating\n", ms_time()/1000, philo->id);
 	philo->last_meal = ms_time();
 	pthread_mutex_unlock(&philo->meal_time_lock);
 	philo_sleep(philo->data, philo->data->tte);
@@ -214,7 +224,7 @@ int	main(int argc, char **argv)
 	if (argc < 5 || check_args(argc - 1, argv) || argc > 6)
 		return (printf("%s", USAGE), EXIT_FAILURE);
 	data_init(&data, argc, argv);
-	data.start_time = ms_time() + (data.count * 50);
+	data.start_time = ms_time();
 	while (++i < data.count)
 	{
 		data.philo[i].last_meal = data.start_time;
