@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-size_t	timestamp(void)
+size_t	ms_time(void)
 {
 	struct timeval	time;
 

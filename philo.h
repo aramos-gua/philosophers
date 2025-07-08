@@ -58,7 +58,7 @@ typedef struct s_data
 // Init
 void			data_init(t_data *data, int argc, char **argv);
 void			philo_init(t_data *data);
-size_t			timestamp(void);
+size_t			ms_time(void);
 
 // Libft functions
 int				ft_isdigit(int c);
