@@ -128,38 +128,35 @@ void	philo_sleep(t_data *data, unsigned int sleep_time)
 		if (has_simulation_stopped(data))
 			break ;
 		usleep(100);
-		printf("printing something %d\n", data->philo[1].id);
 	}
 }
 
 void  eat_sleep_routine(t_philo *philo)
 {
+	//size_t	now;
+
 	if (philo->id % 2 == 0)
 	{
 		pthread_mutex_lock(philo->right_fork);
-		printf("%lu philo [%d] has taken a fork\n", ms_time(), philo->id);
+		printf("%lu philo [%d] has taken right fork\n", ms_time() - philo->data->start_time, philo->id);
 		pthread_mutex_lock(philo->left_fork);
-		printf("%lu philo [%d] has taken a fork\n", ms_time(), philo->id);
+		printf("%lu philo [%d] has taken left fork\n", ms_time() - philo->data->start_time, philo->id);
 	}
 	else
 	{
 		pthread_mutex_lock(philo->left_fork);
-		printf("%lu philo [%d] has taken a fork\n", ms_time(), philo->id);
+		printf("%lu philo [%d] has taken left fork\n", ms_time() - philo->data->start_time, philo->id);
 		pthread_mutex_lock(philo->right_fork);
-		printf("%lu philo [%d] has taken a fork\n", ms_time(), philo->id);
+		printf("%lu philo [%d] has taken right fork\n", ms_time() - philo->data->start_time, philo->id);
 	}
+	//now = ms_time;
 	pthread_mutex_lock(&philo->meal_time_lock);
-	printf("%lu philo [%d] is eating\n", ms_time()/1000, philo->id);
 	philo->last_meal = ms_time();
+	philo->meals_eaten += 1;
 	pthread_mutex_unlock(&philo->meal_time_lock);
+	printf("%lu philo [%d] is eating\n", ms_time() - philo->data->start_time, philo->id);
 	philo_sleep(philo->data, philo->data->tte);
-//	if (has_simulation_stopped(philo->data) == false)
-//	{
-//		pthread_mutex_lock(&philo->meal_time_lock);
-//		philo->meals_eaten += 1;
-//		pthread_mutex_unlock(&philo->meal_time_lock);
-//	}
-	printf("philo [%d]  is sleeping\n", philo->id);
+	printf("%lu philo [%d] is sleeping\n", ms_time() - philo->data->start_time, philo->id);
 	pthread_mutex_unlock(philo->left_fork);
 	pthread_mutex_unlock(philo->right_fork);
 	philo_sleep(philo->data, philo->data->tts);
@@ -179,7 +176,7 @@ void  think_routine(t_philo *philo, bool silent)
   if (ttt > 600)
     ttt = 200;
   if (silent == false)
-    printf("philo [%d] is thinking\n", philo->id);
+    printf("%lu philo [%d] is thinking\n", ms_time() - philo->data->start_time, philo->id);
   philo_sleep(philo->data, ttt);
 }
 
@@ -200,7 +197,7 @@ void	*routine(void *data)
 	if (philo->data->count == 1)
 	{
 		think_routine(philo, false);
-		set_sim_stop_flag(data, true);
+		set_sim_stop_flag(philo->data, true);
 
 	}
 	else if (philo->data->count % 2)

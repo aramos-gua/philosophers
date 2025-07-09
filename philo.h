@@ -29,7 +29,7 @@ typedef struct s_philo
 {
 	int				id;
 	unsigned int	meals_eaten;
-	unsigned long	last_meal;
+	size_t			last_meal;
 	pthread_t		thread;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
