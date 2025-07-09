@@ -196,9 +196,14 @@ void	*routine(void *data)
 		return (NULL);
 	if (philo->data->count == 1)
 	{
-		think_routine(philo, false);
+		printf("%lu philo [%d] has taken left fork\n", ms_time() - philo->data->start_time, philo->id);
+		pthread_mutex_lock(&philo->meal_time_lock);
+		philo->last_meal = ms_time();
+		pthread_mutex_unlock(&philo->meal_time_lock);
+		usleep(philo->data->ttd * 1000);
+		printf("%lu philo[%d] has died\n", ms_time() - philo->data->start_time, philo->id);
 		set_sim_stop_flag(philo->data, true);
-
+		return (NULL);
 	}
 	else if (philo->data->count % 2)
 		think_routine(philo, true);
@@ -206,6 +211,13 @@ void	*routine(void *data)
 	think_routine(philo, false);
 	while (has_simulation_stopped(philo->data) == false)
 	{
+		pthread_mutex_lock(&philo->meal_time_lock);
+		if (philo->data->rounds != -1 && philo->meals_eaten >= (unsigned int)philo->data->rounds)
+		{
+			pthread_mutex_unlock(&philo->meal_time_lock);
+			break ;
+		}
+		pthread_mutex_unlock(&philo->meal_time_lock);
 		eat_sleep_routine(philo);
 		think_routine(philo, false);
 	}
