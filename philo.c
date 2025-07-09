@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/08 17:58:48 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/09 16:17:32 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@ void  sim_delay(time_t start_time)
     usleep(100);
 }
 
-void	set_sim_stop_flag(t_data *data, bool state)
+void	set_sim_stop_flag(t_data *data, bool flag)
 {
 	pthread_mutex_lock(&data->sim_lock);
-	data->sim_stop = state;
+	data->sim_stop = flag;
 	pthread_mutex_unlock(&data->sim_lock);
 }
 
@@ -45,7 +45,7 @@ bool	starved(t_philo *philo)
 	if ((time - philo->last_meal) >= philo->data->ttd)
 	{
 		set_sim_stop_flag(philo->data, true);
-		printf("philo [%d] died\n", philo->id);
+		printf("%lu philo [%d] died\n", ms_time() - philo->data->start_time, philo->id);
 		pthread_mutex_unlock(&philo->meal_time_lock);
 		return (true);
 	}
@@ -233,7 +233,7 @@ int	main(int argc, char **argv)
 	if (argc < 5 || check_args(argc - 1, argv) || argc > 6)
 		return (printf("%s", USAGE), EXIT_FAILURE);
 	data_init(&data, argc, argv);
-	data.start_time = ms_time();
+	data.start_time = ms_time() + 50;
 	while (++i < data.count)
 	{
 		data.philo[i].last_meal = data.start_time;
