@@ -34,7 +34,8 @@ SRC = ./philo.c\
 	./libft.c\
 	./atox.c\
 	./error_check.c\
-	./exit.c
+	./exit.c\
+	./printing.c
 
 OBJ = $(SRC:.c=.o)
 

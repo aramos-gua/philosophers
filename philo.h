@@ -6,7 +6,7 @@
 /*   By: alex <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:57:01 by alex              #+#    #+#             */
-/*   Updated: 2025/07/10 14:57:03 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/10 17:49:06 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,6 @@ typedef struct s_philo
 	unsigned int	meals_eaten;
 	size_t			last_meal;
 	pthread_t		thread;
-	pthread_mutex_t	*left_fork;
-	pthread_mutex_t	*right_fork;
 	unsigned int	fork[2];
 	pthread_mutex_t	meal_time_lock;
 	t_data			*data;
@@ -70,4 +68,5 @@ unsigned int	ft_atou(const char *str);
 int				check_args(int options, char **argv);
 void			ft_exit_mutex(t_data *data);
 int				error_message(char *str);
+void	filter_stamp(t_philo *philo, bool flag, char *verb);
 #endif

@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/10 15:25:56 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/10 17:49:37 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void  sim_delay(time_t start_time)
 {
   while ((time_t)ms_time() < start_time)
-    continue ;
+    usleep(100) ;
 }
 //usleep(100);//instead of continue
 
@@ -176,9 +176,9 @@ void  think_routine(t_philo *philo, bool silent)
 static void	*forever_alone(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->forks[philo->fork[0]]);
-	printf("Got fork\n");
+	filter_stamp(philo, false, "fork");
 	philo_sleep(philo->data, philo->data->ttd);
-	printf("Died alone\n");
+	filter_stamp(philo, false, "die");
 	pthread_mutex_unlock(&philo->data->forks[philo->fork[0]]);
 	return (NULL);
 }
@@ -198,7 +198,7 @@ void	*routine(void *data)
 		return (NULL);
 	if (philo->data->count == 1)
 		return(forever_alone(philo));
-	else if (philo->data->count % 2)
+	else if (philo->id % 2)
 		think_routine(philo, true);
 	while (has_simulation_stopped(philo->data) == false)
 	{

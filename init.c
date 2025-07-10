@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 15:07:50 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/10 15:08:47 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/10 16:39:22 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ size_t	ms_time(void)
 
 static void	get_cutlery(t_philo *philo)
 {
-	philo->fork[0] = philo->id;
-	philo->fork[1] = (philo->id + 1) % philo->data->count;
+	philo->fork[0] = philo->id - 1;
+	philo->fork[1] = (philo->id) % philo->data->count;
 	if (philo->id % 2)
 	{
-		philo->fork[0] = (philo->id + 1) % philo->data->count;
-		philo->fork[1] = philo->id;
+		philo->fork[0] = (philo->id) % philo->data->count;
+		philo->fork[1] = philo->id - 1;
 	}
 }
 
@@ -62,21 +62,21 @@ void	data_init(t_data *data, int argc, char **argv)
 
 	i = 0;
 	data->count = ft_atou(argv[1]);
-	data->forks = malloc(data->count * sizeof(pthread_mutex_t));
-	if (!data->forks)
-		error_message("Error/init: Malloc Failed\n");
 	data->ttd = ft_atou(argv[2]);
 	data->tte = ft_atou(argv[3]);
 	data->tts = ft_atou(argv[4]);
-	data->sim_stop = false;
 	data->simulation_end = 0;
 	if (argc == 6)
 		data->rounds = ft_atou(argv[5]);
 	else
 		data->rounds = -1;
-	pthread_mutex_init(&data->print_lock, NULL);
-	pthread_mutex_init(&data->sim_lock, NULL);
+	philo_init(data);
+	data->forks = malloc(data->count * sizeof(pthread_mutex_t));
+	if (!data->forks)
+		error_message("Error/init: Malloc Failed\n");
 	while (i < data->count)
 		pthread_mutex_init(&data->forks[i++], NULL);
-	philo_init(data);
+	pthread_mutex_init(&data->print_lock, NULL);
+	pthread_mutex_init(&data->sim_lock, NULL);
+	data->sim_stop = false;
 }
