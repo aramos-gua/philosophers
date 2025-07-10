@@ -17,7 +17,7 @@ static void	stamp(t_philo *philo, char *str)
 	printf("%lu %d %s\n", ms_time() - philo->data->start_time, philo->id, str);
 }
 
-void	filter_stamp(t_philo *philo, bool flag, char *verb)
+void	filter_stamp(t_philo *philo, bool flag, unsigned int verb)
 {
 	pthread_mutex_lock(&philo->data->print_lock);
 	if (has_simulation_stopped(philo->data) == true && flag == false)
@@ -25,15 +25,15 @@ void	filter_stamp(t_philo *philo, bool flag, char *verb)
 		pthread_mutex_unlock(&philo->data->print_lock);
 		return ;
 	}
-	if (verb == "die")
+	if (verb == 1)//die
 		stamp(philo, "died");
-	else if (verb == "eat")
+	else if (verb == 2)//eat
 		stamp(philo, "is eating");
-	else if (verb == "sleep")
+	else if (verb == 3)//sleep
 		stamp(philo, "is sleeping");
-	else if (verb == "think")
+	else if (verb == 4)//think
 		stamp(philo, "is thinking");
-	else if (verb == "fork")
+	else if (verb == 5)//fork
 		stamp(philo, "has taken a fork");
 	pthread_mutex_unlock(&philo->data->print_lock);
 }

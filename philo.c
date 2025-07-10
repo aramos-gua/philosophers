@@ -45,9 +45,9 @@ bool	starved(t_philo *philo)
 	time = ms_time();
 	if ((time - philo->last_meal) >= philo->data->ttd)
 	{
-		set_sim_stop_flag(philo->data, true);
-		printf("%lu philo [%d] died\n", ms_time() - philo->data->start_time, philo->id);
 		pthread_mutex_unlock(&philo->meal_time_lock);
+		set_sim_stop_flag(philo->data, true);
+		filter_stamp(philo, true, 1);
 		return (true);
 	}
 	return (false);
@@ -64,7 +64,10 @@ bool	end_condition_reached(t_data *data)
 	{
 		pthread_mutex_lock(&data->philo[i].meal_time_lock);
 		if (starved(&data->philo[i]))
+		{
+			pthread_mutex_unlock(&data->philo[i].meal_time_lock);
 			return (true);
+		}
 		if (data->rounds != -1)
 			if (data->philo[i].meals_eaten < (unsigned int)data->rounds)
 				all_rounds = false;
@@ -97,28 +100,6 @@ void	*monitor(void *arg)
 	return (NULL);
 }
 
-//void	print_log(t_philo *philo, const char *str)
-//{
-//	unsigned long	timestamp;
-//
-//	pthread_mutex_lock(&philo->data->print_lock);
-//	if (philo->data->simulation_end)
-//	{
-//		pthread_mutex_unlock(&philo->data->print_lock);
-//		return ;
-//	}
-//	timestamp = (unsigned long)(ms_time() - philo->data->start_time);
-//	printf("%lu %d %s\n", timestamp, philo->id, str);
-//	pthread_mutex_unlock(&philo->data->print_lock);
-//}
-
-//void	smart_sleep(unsigned int duration, t_data *data)
-//{
-//	size_t	start = ms_time();
-//	while (!data->simulation_end && ms_time() - start < duration)
-//		usleep(100);
-//}
-
 void	philo_sleep(t_data *data, unsigned int sleep_time)
 {
 	unsigned int	wake_up;
@@ -135,10 +116,10 @@ void	philo_sleep(t_data *data, unsigned int sleep_time)
 void  eat_sleep_routine(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->forks[philo->fork[0]]);
-	printf("%lu philo [%d] has taken fork\n", ms_time() - philo->data->start_time, philo->id);
+	filter_stamp(philo, false, 5);
 	pthread_mutex_lock(&philo->data->forks[philo->fork[1]]);
-	printf("%lu philo [%d] has taken fork\n", ms_time() - philo->data->start_time, philo->id);
-	printf("Eatig\n");
+	filter_stamp(philo, false, 5);
+	filter_stamp(philo, false, 2);
 	pthread_mutex_lock(&philo->meal_time_lock);
 	philo->last_meal = ms_time();
 	pthread_mutex_unlock(&philo->meal_time_lock);
@@ -149,7 +130,7 @@ void  eat_sleep_routine(t_philo *philo)
 		philo->meals_eaten += 1;
 		pthread_mutex_unlock(&philo->meal_time_lock);
 	}
-	printf("%lu philo [%d] is sleeping\n", ms_time() - philo->data->start_time, philo->id);
+	filter_stamp(philo, false, 3);
 	pthread_mutex_unlock(&philo->data->forks[philo->fork[1]]);
 	pthread_mutex_unlock(&philo->data->forks[philo->fork[0]]);
 	philo_sleep(philo->data, philo->data->tts);
@@ -169,16 +150,16 @@ void  think_routine(t_philo *philo, bool silent)
   if (ttt > 600)
     ttt = 200;
   if (silent == false)
-    printf("%lu philo [%d] is thinking\n", ms_time() - philo->data->start_time, philo->id);
+		filter_stamp(philo, false, 4);
   philo_sleep(philo->data, ttt);
 }
 
 static void	*forever_alone(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->forks[philo->fork[0]]);
-	filter_stamp(philo, false, "fork");
+	filter_stamp(philo, false, 5);
 	philo_sleep(philo->data, philo->data->ttd);
-	filter_stamp(philo, false, "die");
+	filter_stamp(philo, false, 1);
 	pthread_mutex_unlock(&philo->data->forks[philo->fork[0]]);
 	return (NULL);
 }
@@ -190,9 +171,9 @@ void	*routine(void *data)
 	philo = (t_philo *)data;
 	if (philo->data->rounds == 0)
 		return (NULL);
-	pthread_mutex_lock(&philo->meal_time_lock);//No need of this block
-	philo->last_meal = philo->data->start_time;//because start_time takes
-	pthread_mutex_unlock(&philo->meal_time_lock);//care of the synch
+	pthread_mutex_lock(&philo->meal_time_lock);
+	philo->last_meal = philo->data->start_time;// - (philo->data->count * 2 * 10);
+	pthread_mutex_unlock(&philo->meal_time_lock);
 	sim_delay(philo->data->start_time);
 	if (philo->data->ttd == 0)
 		return (NULL);
@@ -213,23 +194,24 @@ int	main(int argc, char **argv)
 	unsigned int	i;
 	t_data			data;
 
-	i = -1;
+	i = 0;
 	if (argc < 5 || check_args(argc - 1, argv) || argc > 6)
 		return (printf("%s", USAGE), EXIT_FAILURE);
 	data_init(&data, argc, argv);
 	data.start_time = ms_time() + (data.count * 2 * 10);
-	while (++i < data.count)
+	while (i < data.count)
 	{
-		data.philo[i].last_meal = data.start_time;
-		if (pthread_create(&data.philo[i].thread, NULL, routine, &data.philo[i]) != 0)
+		if (pthread_create(&data.philo[i].thread, NULL, &routine, &data.philo[i]) != 0)
 			break ;
+		i++;
 	}
 	if (data.count > 1)
 		pthread_create(&data.monitor, NULL, &monitor, &data);
-	i = -1;
-	while (++i < data.count)
+	i = 0;
+	while (i < data.count)
 	{
 		pthread_join(data.philo[i].thread, NULL);
+		i++;
 	}
 	if (data.count > 1)
 		pthread_join(data.monitor, NULL);

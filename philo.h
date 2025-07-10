@@ -68,5 +68,6 @@ unsigned int	ft_atou(const char *str);
 int				check_args(int options, char **argv);
 void			ft_exit_mutex(t_data *data);
 int				error_message(char *str);
-void	filter_stamp(t_philo *philo, bool flag, char *verb);
+void	filter_stamp(t_philo *philo, bool flag, unsigned int verb);
+bool	has_simulation_stopped(t_data *data);
 #endif

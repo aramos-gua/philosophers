@@ -51,7 +51,7 @@ void	philo_init(t_data *data)
 		philo[i].data = data;
 		philo[i].meals_eaten = 0;
 		pthread_mutex_init(&philo[i].meal_time_lock, NULL);
-		get_cutlery(philo);
+		get_cutlery(&philo[i]);
 		i++;
 	}
 }
