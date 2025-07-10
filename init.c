@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 15:07:50 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/08 17:47:36 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/10 15:08:47 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,17 @@ size_t	ms_time(void)
 	if (gettimeofday(&time, NULL) == -1)
 		write(2, "Error/time: Fetch Error\n", 24);
 	return (time.tv_sec * 1000 + (time.tv_usec / 1000));
+}
+
+static void	get_cutlery(t_philo *philo)
+{
+	philo->fork[0] = philo->id;
+	philo->fork[1] = (philo->id + 1) % philo->data->count;
+	if (philo->id % 2)
+	{
+		philo->fork[0] = (philo->id + 1) % philo->data->count;
+		philo->fork[1] = philo->id;
+	}
 }
 
 void	philo_init(t_data *data)
@@ -38,11 +49,9 @@ void	philo_init(t_data *data)
 	{
 		philo[i].id = 1 + i;
 		philo[i].data = data;
-		//philo[i].last_meal = get_time();//already set in main with delay
 		philo[i].meals_eaten = 0;
-		philo[i].left_fork = &data->forks[i];
-		philo[i].right_fork = &data->forks[(i + 1) % data->count];
 		pthread_mutex_init(&philo[i].meal_time_lock, NULL);
+		get_cutlery(philo);
 		i++;
 	}
 }

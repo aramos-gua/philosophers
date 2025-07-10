@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/09 16:17:32 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/10 15:25:56 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,9 @@
 void  sim_delay(time_t start_time)
 {
   while ((time_t)ms_time() < start_time)
-    usleep(100);
+    continue ;
 }
+//usleep(100);//instead of continue
 
 void	set_sim_stop_flag(t_data *data, bool flag)
 {
@@ -83,10 +84,10 @@ void	*monitor(void *arg)
 	t_data			*data;
 
 	data = (t_data *)arg;
-	sim_delay(data->start_time);
 	if (data->rounds == 0)
 		return (NULL);
 	set_sim_stop_flag(data, false);
+	sim_delay(data->start_time);
 	while (true)
 	{
 		if (end_condition_reached(data) == true)
@@ -96,27 +97,27 @@ void	*monitor(void *arg)
 	return (NULL);
 }
 
-void	print_log(t_philo *philo, const char *str)
-{
-	unsigned long	timestamp;
+//void	print_log(t_philo *philo, const char *str)
+//{
+//	unsigned long	timestamp;
+//
+//	pthread_mutex_lock(&philo->data->print_lock);
+//	if (philo->data->simulation_end)
+//	{
+//		pthread_mutex_unlock(&philo->data->print_lock);
+//		return ;
+//	}
+//	timestamp = (unsigned long)(ms_time() - philo->data->start_time);
+//	printf("%lu %d %s\n", timestamp, philo->id, str);
+//	pthread_mutex_unlock(&philo->data->print_lock);
+//}
 
-	pthread_mutex_lock(&philo->data->print_lock);
-	if (philo->data->simulation_end)
-	{
-		pthread_mutex_unlock(&philo->data->print_lock);
-		return ;
-	}
-	timestamp = (unsigned long)(ms_time() - philo->data->start_time);
-	printf("%lu %d %s\n", timestamp, philo->id, str);
-	pthread_mutex_unlock(&philo->data->print_lock);
-}
-
-void	smart_sleep(unsigned int duration, t_data *data)
-{
-	size_t	start = ms_time();
-	while (!data->simulation_end && ms_time() - start < duration)
-		usleep(100);
-}
+//void	smart_sleep(unsigned int duration, t_data *data)
+//{
+//	size_t	start = ms_time();
+//	while (!data->simulation_end && ms_time() - start < duration)
+//		usleep(100);
+//}
 
 void	philo_sleep(t_data *data, unsigned int sleep_time)
 {
@@ -133,32 +134,24 @@ void	philo_sleep(t_data *data, unsigned int sleep_time)
 
 void  eat_sleep_routine(t_philo *philo)
 {
-	//size_t	now;
-
-	if (philo->id % 2 == 0)
-	{
-		pthread_mutex_lock(philo->right_fork);
-		printf("%lu philo [%d] has taken right fork\n", ms_time() - philo->data->start_time, philo->id);
-		pthread_mutex_lock(philo->left_fork);
-		printf("%lu philo [%d] has taken left fork\n", ms_time() - philo->data->start_time, philo->id);
-	}
-	else
-	{
-		pthread_mutex_lock(philo->left_fork);
-		printf("%lu philo [%d] has taken left fork\n", ms_time() - philo->data->start_time, philo->id);
-		pthread_mutex_lock(philo->right_fork);
-		printf("%lu philo [%d] has taken right fork\n", ms_time() - philo->data->start_time, philo->id);
-	}
-	//now = ms_time;
+	pthread_mutex_lock(&philo->data->forks[philo->fork[0]]);
+	printf("%lu philo [%d] has taken fork\n", ms_time() - philo->data->start_time, philo->id);
+	pthread_mutex_lock(&philo->data->forks[philo->fork[1]]);
+	printf("%lu philo [%d] has taken fork\n", ms_time() - philo->data->start_time, philo->id);
+	printf("Eatig\n");
 	pthread_mutex_lock(&philo->meal_time_lock);
 	philo->last_meal = ms_time();
-	philo->meals_eaten += 1;
 	pthread_mutex_unlock(&philo->meal_time_lock);
-	printf("%lu philo [%d] is eating\n", ms_time() - philo->data->start_time, philo->id);
 	philo_sleep(philo->data, philo->data->tte);
+	if (has_simulation_stopped(philo->data) == false)
+	{
+		pthread_mutex_lock(&philo->meal_time_lock);
+		philo->meals_eaten += 1;
+		pthread_mutex_unlock(&philo->meal_time_lock);
+	}
 	printf("%lu philo [%d] is sleeping\n", ms_time() - philo->data->start_time, philo->id);
-	pthread_mutex_unlock(philo->left_fork);
-	pthread_mutex_unlock(philo->right_fork);
+	pthread_mutex_unlock(&philo->data->forks[philo->fork[1]]);
+	pthread_mutex_unlock(&philo->data->forks[philo->fork[0]]);
 	philo_sleep(philo->data, philo->data->tts);
 }
 
@@ -180,44 +173,35 @@ void  think_routine(t_philo *philo, bool silent)
   philo_sleep(philo->data, ttt);
 }
 
+static void	*forever_alone(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->data->forks[philo->fork[0]]);
+	printf("Got fork\n");
+	philo_sleep(philo->data, philo->data->ttd);
+	printf("Died alone\n");
+	pthread_mutex_unlock(&philo->data->forks[philo->fork[0]]);
+	return (NULL);
+}
 
 void	*routine(void *data)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)data;
-	sim_delay(philo->data->start_time);
 	if (philo->data->rounds == 0)
 		return (NULL);
-	//pthread_mutex_lock(&philo->meal_time_lock);//No need of this block
-	//philo->last_meal = philo->data->start_time;//because start_time takes
-	//pthread_mutex_unlock(&philo->meal_time_lock);//care of the synch
+	pthread_mutex_lock(&philo->meal_time_lock);//No need of this block
+	philo->last_meal = philo->data->start_time;//because start_time takes
+	pthread_mutex_unlock(&philo->meal_time_lock);//care of the synch
+	sim_delay(philo->data->start_time);
 	if (philo->data->ttd == 0)
 		return (NULL);
 	if (philo->data->count == 1)
-	{
-		printf("%lu philo [%d] has taken left fork\n", ms_time() - philo->data->start_time, philo->id);
-		pthread_mutex_lock(&philo->meal_time_lock);
-		philo->last_meal = ms_time();
-		pthread_mutex_unlock(&philo->meal_time_lock);
-		usleep(philo->data->ttd * 1000);
-		printf("%lu philo[%d] has died\n", ms_time() - philo->data->start_time, philo->id);
-		set_sim_stop_flag(philo->data, true);
-		return (NULL);
-	}
+		return(forever_alone(philo));
 	else if (philo->data->count % 2)
 		think_routine(philo, true);
-	eat_sleep_routine(philo);
-	think_routine(philo, false);
 	while (has_simulation_stopped(philo->data) == false)
 	{
-		pthread_mutex_lock(&philo->meal_time_lock);
-		if (philo->data->rounds != -1 && philo->meals_eaten >= (unsigned int)philo->data->rounds)
-		{
-			pthread_mutex_unlock(&philo->meal_time_lock);
-			break ;
-		}
-		pthread_mutex_unlock(&philo->meal_time_lock);
 		eat_sleep_routine(philo);
 		think_routine(philo, false);
 	}
@@ -233,7 +217,7 @@ int	main(int argc, char **argv)
 	if (argc < 5 || check_args(argc - 1, argv) || argc > 6)
 		return (printf("%s", USAGE), EXIT_FAILURE);
 	data_init(&data, argc, argv);
-	data.start_time = ms_time() + 50;
+	data.start_time = ms_time() + (data.count * 2 * 10);
 	while (++i < data.count)
 	{
 		data.philo[i].last_meal = data.start_time;
