@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/11 08:43:43 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/11 08:55:37 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ bool	has_simulation_stopped(t_data *data)
 
 bool	starved(t_philo *philo)
 {
-	time_t	time;
+	unsigned long	time;
 
 	time = ms_time();
 	if ((time - philo->last_meal) >= philo->data->ttd)
@@ -104,7 +104,7 @@ void	*monitor(void *arg)
 
 void	philo_sleep(t_data *data, unsigned int sleep_time)
 {
-	unsigned int	wake_up;
+	unsigned long	wake_up;
 
 	wake_up = ms_time() + sleep_time;
 	while (ms_time() < wake_up)
