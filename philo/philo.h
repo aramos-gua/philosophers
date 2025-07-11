@@ -6,7 +6,7 @@
 /*   By: alex <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:57:01 by alex              #+#    #+#             */
-/*   Updated: 2025/07/11 08:43:05 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/11 13:35:35 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ size_t			ms_time(void);
 int				ft_isdigit(int c);
 long			ft_atoln(const char *str);
 unsigned int	ft_atou(const char *str);
+int	ft_atoi(const char *nptr);
 
 // Error handling 
 int				check_args(int options, char **argv);

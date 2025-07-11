@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 15:07:50 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/11 08:45:36 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/11 13:34:22 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	data_init(t_data *data, int argc, char **argv)
 	data->tts = ft_atou(argv[4]);
 	data->simulation_end = 0;
 	if (argc == 6)
-		data->rounds = ft_atou(argv[5]);
+		data->rounds = ft_atoi(argv[5]);
 	else
 		data->rounds = -1;
 	philo_init(data);

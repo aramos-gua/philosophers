@@ -6,15 +6,15 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/11 09:16:52 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/11 13:35:03 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void  sim_delay(time_t start_time)
+void  sim_delay(unsigned long start_time)
 {
-  while ((time_t)ms_time() < start_time)
+  while (ms_time() < start_time)
     continue ;
 }
 
@@ -139,13 +139,13 @@ void  eat_sleep_routine(t_philo *philo)
 
 void  think_routine(t_philo *philo, bool silent)
 {
-  time_t  ttt;
+  unsigned long  ttt;
 
   pthread_mutex_lock(&philo->meal_time_lock);
   ttt = (philo->data->ttd - (ms_time() - philo->last_meal) - philo->data->tte) / 2;
   pthread_mutex_unlock(&philo->meal_time_lock);
-  if (ttt < 0)
-    ttt = 0;
+  //if (ttt < 0)
+  //  ttt = 0;
   if (ttt == 0 && silent == true)
     ttt = 1;
   if (ttt > 600)
@@ -218,6 +218,6 @@ int	main(int argc, char **argv)
 	if (data.count > 1)
 		pthread_join(data.monitor, NULL);
 	ft_exit_mutex(&data);
-	printf("They number of rounds of food was %d\n", data.rounds);
+	//get_bill(&data);
 	return (EXIT_SUCCESS);
 }
