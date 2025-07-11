@@ -6,13 +6,13 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 15:07:50 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/10 16:39:22 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/11 08:45:36 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-size_t	ms_time(void)
+unsigned long	ms_time(void)
 {
 	struct timeval	time;
 

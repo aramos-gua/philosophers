@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/10 17:49:37 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/11 08:43:43 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,8 @@
 void  sim_delay(time_t start_time)
 {
   while ((time_t)ms_time() < start_time)
-    usleep(100) ;
+    continue ;
 }
-//usleep(100);//instead of continue
 
 void	set_sim_stop_flag(t_data *data, bool flag)
 {
@@ -45,6 +44,7 @@ bool	starved(t_philo *philo)
 	time = ms_time();
 	if ((time - philo->last_meal) >= philo->data->ttd)
 	{
+		printf("philo %d is starving: now=%lu, last_meal=%lu, ttd=%lu\n", philo->id, ms_time(), philo->last_meal, philo->data->ttd);
 		pthread_mutex_unlock(&philo->meal_time_lock);
 		set_sim_stop_flag(philo->data, true);
 		filter_stamp(philo, true, 1);
@@ -86,14 +86,16 @@ void	*monitor(void *arg)
 {
 	t_data			*data;
 
+	printf("Starting monitor\n");
 	data = (t_data *)arg;
 	if (data->rounds == 0)
 		return (NULL);
 	set_sim_stop_flag(data, false);
 	sim_delay(data->start_time);
+	usleep(1000);
 	while (true)
 	{
-		if (end_condition_reached(data) == true)
+		if (end_condition_reached(data))
 			return (NULL);
 		usleep(1000);
 	}
@@ -172,7 +174,7 @@ void	*routine(void *data)
 	if (philo->data->rounds == 0)
 		return (NULL);
 	pthread_mutex_lock(&philo->meal_time_lock);
-	philo->last_meal = philo->data->start_time;// - (philo->data->count * 2 * 10);
+	philo->last_meal = philo->data->start_time;
 	pthread_mutex_unlock(&philo->meal_time_lock);
 	sim_delay(philo->data->start_time);
 	if (philo->data->ttd == 0)
@@ -199,6 +201,7 @@ int	main(int argc, char **argv)
 		return (printf("%s", USAGE), EXIT_FAILURE);
 	data_init(&data, argc, argv);
 	data.start_time = ms_time() + (data.count * 2 * 10);
+	printf("This is the start_time: %lu\n", data.start_time);
 	while (i < data.count)
 	{
 		if (pthread_create(&data.philo[i].thread, NULL, &routine, &data.philo[i]) != 0)

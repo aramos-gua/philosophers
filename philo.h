@@ -6,7 +6,7 @@
 /*   By: alex <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:57:01 by alex              #+#    #+#             */
-/*   Updated: 2025/07/10 17:49:06 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/11 08:43:05 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef struct s_philo
 {
 	int				id;
 	unsigned int	meals_eaten;
-	size_t			last_meal;
+	unsigned long			last_meal;
 	pthread_t		thread;
 	unsigned int	fork[2];
 	pthread_mutex_t	meal_time_lock;
@@ -40,9 +40,9 @@ typedef struct s_data
 {
 	t_philo			*philo;
 	unsigned int	count;
-	unsigned int	ttd;
-	unsigned int	tte;
-	unsigned int	tts;
+	unsigned long	ttd;
+	unsigned long	tte;
+	unsigned long	tts;
 	int				rounds;
 
 	unsigned long	start_time;
