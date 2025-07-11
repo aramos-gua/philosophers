@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/11 08:55:37 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/11 09:16:52 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ bool	starved(t_philo *philo)
 	time = ms_time();
 	if ((time - philo->last_meal) >= philo->data->ttd)
 	{
-		printf("philo %d is starving: now=%lu, last_meal=%lu, ttd=%lu\n", philo->id, ms_time(), philo->last_meal, philo->data->ttd);
+		//printf("philo %d is starving: now=%lu, last_meal=%lu, ttd=%lu\n", philo->id, ms_time(), philo->last_meal, philo->data->ttd);
 		pthread_mutex_unlock(&philo->meal_time_lock);
 		set_sim_stop_flag(philo->data, true);
 		filter_stamp(philo, true, 1);
@@ -86,7 +86,6 @@ void	*monitor(void *arg)
 {
 	t_data			*data;
 
-	printf("Starting monitor\n");
 	data = (t_data *)arg;
 	if (data->rounds == 0)
 		return (NULL);
@@ -201,7 +200,7 @@ int	main(int argc, char **argv)
 		return (printf("%s", USAGE), EXIT_FAILURE);
 	data_init(&data, argc, argv);
 	data.start_time = ms_time() + (data.count * 2 * 10);
-	printf("This is the start_time: %lu\n", data.start_time);
+	//printf("This is the start_time: %lu\n", data.start_time);
 	while (i < data.count)
 	{
 		if (pthread_create(&data.philo[i].thread, NULL, &routine, &data.philo[i]) != 0)
@@ -219,5 +218,6 @@ int	main(int argc, char **argv)
 	if (data.count > 1)
 		pthread_join(data.monitor, NULL);
 	ft_exit_mutex(&data);
+	printf("They number of rounds of food was %d\n", data.rounds);
 	return (EXIT_SUCCESS);
 }
