@@ -101,16 +101,16 @@ void	*monitor(void *arg)
 	return (NULL);
 }
 
-void	philo_sleep(t_data *data, unsigned int sleep_time)
+void	ft_sleep(t_data *data, unsigned int sleep_time)
 {
-	unsigned long	wake_up;
+	unsigned long	start;
 
-	wake_up = ms_time() + sleep_time;
-	while (ms_time() < wake_up)
+	start = ms_time();
+	while (ms_time() - start < sleep_time)
 	{
 		if (has_simulation_stopped(data))
 			break ;
-		usleep(100);
+		usleep(200);
 	}
 }
 
@@ -144,8 +144,6 @@ void  think_routine(t_philo *philo, bool silent)
   pthread_mutex_lock(&philo->meal_time_lock);
   ttt = (philo->data->ttd - (ms_time() - philo->last_meal) - philo->data->tte) / 2;
   pthread_mutex_unlock(&philo->meal_time_lock);
-  //if (ttt < 0)
-  //  ttt = 0;
   if (ttt == 0 && silent == true)
     ttt = 1;
   if (ttt > 600)
