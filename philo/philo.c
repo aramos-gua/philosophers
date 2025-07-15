@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/14 15:03:36 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/15 08:42:59 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,10 @@ bool	starved(t_philo *philo)
 	unsigned long	time;
 
 	time = ms_time();
-	if ((time - philo->last_meal) >= philo->data->ttd)
+	if ((time - philo->last_meal) >= philo->data->ttd - 2)
 	{
-		printf("philo %d is starving: start =%lu, now=%lu, last_meal=%lu, ttd=%lu\n", philo->id, philo->data->start_time, ms_time(), philo->last_meal, philo->data->ttd);
-		pthread_mutex_unlock(&philo->meal_time_lock);
+		printf("philo %d is starving: start =%lu, now=%lu, last_meal=%lu, last_meal_vs_now=%lu, ttd=%lu\n", philo->id, philo->data->start_time, ms_time(), philo->last_meal, (time - philo->last_meal), philo->data->ttd);
+		//pthread_mutex_unlock(&philo->meal_time_lock);
 		set_sim_stop_flag(philo->data, true);
 		filter_stamp(philo, true, 1);
 		return (true);
@@ -91,13 +91,15 @@ void	*monitor(void *arg)
 		return (NULL);
 	set_sim_stop_flag(data, false);
 	sim_delay(data->start_time);
-	usleep(1000);
-	while (true)
-	{
-		if (hit_end(data))
-			return (NULL);
-		usleep(1000);
-	}
+	usleep(100);
+	////while (true)
+	////{
+	////	if (hit_end(data))
+	////		return (NULL);
+	////	usleep(100);
+	////}
+	while (!hit_end(data))
+		;
 	return (NULL);
 }
 
@@ -197,7 +199,7 @@ int	main(int argc, char **argv)
 	if (argc < 5 || check_args(argc - 1, argv) || argc > 6)
 		return (printf("%s", USAGE), EXIT_FAILURE);
 	data_init(&data, argc, argv);
-	data.start_time = ms_time() + (data.count * 50);
+	data.start_time = ms_time() + (data.count * 200);
 	while (i < data.count)
 	{
 		if (pthread_create(&data.philo[i].thread, NULL, &routine, &data.philo[i]) != 0)
