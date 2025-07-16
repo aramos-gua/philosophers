@@ -42,7 +42,7 @@ bool	starved(t_philo *philo)
 	unsigned long	time;
 
 	time = ms_time();
-	if ((time - philo->last_meal) >= philo->data->ttd - 2)
+	if ((time - philo->last_meal) >= philo->data->ttd)
 	{
 		printf("philo %d is starving: start =%lu, now=%lu, last_meal=%lu, last_meal_vs_now=%lu, ttd=%lu\n", philo->id, philo->data->start_time, ms_time(), philo->last_meal, (time - philo->last_meal), philo->data->ttd);
 		//pthread_mutex_unlock(&philo->meal_time_lock);
@@ -112,7 +112,7 @@ void	ft_sleep(t_data *data, unsigned int sleep_time)
 	{
 		if (has_simulation_stopped(data))
 			break ;
-		usleep(200);
+		usleep(philo->tte);//FIX THIS
 	}
 }
 
