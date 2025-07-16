@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/15 08:42:59 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/16 17:17:08 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ bool	starved(t_philo *philo)
 	unsigned long	time;
 
 	time = ms_time();
-	if ((time - philo->last_meal) >= philo->data->ttd)
+	if ((time - philo->last_meal) >= (philo->data->ttd + 1))
 	{
 		printf("philo %d is starving: start =%lu, now=%lu, last_meal=%lu, last_meal_vs_now=%lu, ttd=%lu\n", philo->id, philo->data->start_time, ms_time(), philo->last_meal, (time - philo->last_meal), philo->data->ttd);
 		//pthread_mutex_unlock(&philo->meal_time_lock);
@@ -91,28 +91,29 @@ void	*monitor(void *arg)
 		return (NULL);
 	set_sim_stop_flag(data, false);
 	sim_delay(data->start_time);
-	usleep(100);
-	////while (true)
-	////{
-	////	if (hit_end(data))
-	////		return (NULL);
-	////	usleep(100);
-	////}
-	while (!hit_end(data))
-		;
+	//usleep(1000);
+	while (true)
+	{
+		if (hit_end(data))
+			return (NULL);
+		usleep(1000);
+	}
+	//while (!hit_end(data))
+	//	;
 	return (NULL);
 }
 
-void	ft_sleep(t_data *data, unsigned int sleep_time)
+void	ft_sleep(t_data *data, unsigned long sleep_time)
 {
-	unsigned long	start;
+	unsigned long	alarm;
 
-	start = ms_time();
-	while (ms_time() - start < sleep_time)
+	alarm = ms_time() + sleep_time;
+	//printf("alarm: %lu\n", alarm);
+	while (ms_time() < alarm)
 	{
 		if (has_simulation_stopped(data))
 			break ;
-		usleep(philo->tte);//FIX THIS
+		usleep(100);
 	}
 }
 
@@ -141,18 +142,20 @@ void  eat_sleep_routine(t_philo *philo)
 
 void  think_routine(t_philo *philo, bool silent)
 {
-  unsigned long  ttt;
+ unsigned long  ttt;
 
-  pthread_mutex_lock(&philo->meal_time_lock);
-  ttt = (philo->data->ttd - (ms_time() - philo->last_meal) - philo->data->tte) / 2;
-  pthread_mutex_unlock(&philo->meal_time_lock);
-  if (ttt == 0 && silent == true)
-    ttt = 1;
-  if (ttt > 600)
-    ttt = 200;
-  if (silent == false)
-		filter_stamp(philo, false, 4);
-  ft_sleep(philo->data, ttt);
+ pthread_mutex_lock(&philo->meal_time_lock);
+ ttt = (philo->data->ttd - (ms_time() - philo->last_meal) - philo->data->tte) / 2;
+ pthread_mutex_unlock(&philo->meal_time_lock);
+ if (ttt == 0 && silent == true)
+   ttt = 1;
+if (ttt > 200)
+	ttt = 0;
+ if (ttt > 600)
+   ttt = 200;
+ if (silent == false)
+       	filter_stamp(philo, false, 4);
+ ft_sleep(philo->data, ttt);
 }
 
 static void	*forever_alone(t_philo *philo)
