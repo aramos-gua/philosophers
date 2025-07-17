@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 15:07:50 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/11 13:34:22 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/17 15:37:46 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ void	philo_init(t_data *data)
 		philo[i].id = 1 + i;
 		philo[i].data = data;
 		philo[i].meals_eaten = 0;
+		philo[i].last_meal = data->start_time;
 		pthread_mutex_init(&philo[i].meal_time_lock, NULL);
 		get_cutlery(&philo[i]);
 		i++;

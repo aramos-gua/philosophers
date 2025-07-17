@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/16 17:17:08 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/17 16:08:48 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ bool	starved(t_philo *philo)
 	if ((time - philo->last_meal) >= (philo->data->ttd + 1))
 	{
 		printf("philo %d is starving: start =%lu, now=%lu, last_meal=%lu, last_meal_vs_now=%lu, ttd=%lu\n", philo->id, philo->data->start_time, ms_time(), philo->last_meal, (time - philo->last_meal), philo->data->ttd);
-		//pthread_mutex_unlock(&philo->meal_time_lock);
 		set_sim_stop_flag(philo->data, true);
 		filter_stamp(philo, true, 1);
 		return (true);
@@ -91,15 +90,12 @@ void	*monitor(void *arg)
 		return (NULL);
 	set_sim_stop_flag(data, false);
 	sim_delay(data->start_time);
-	//usleep(1000);
 	while (true)
 	{
 		if (hit_end(data))
 			return (NULL);
 		usleep(1000);
 	}
-	//while (!hit_end(data))
-	//	;
 	return (NULL);
 }
 
@@ -108,7 +104,6 @@ void	ft_sleep(t_data *data, unsigned long sleep_time)
 	unsigned long	alarm;
 
 	alarm = ms_time() + sleep_time;
-	//printf("alarm: %lu\n", alarm);
 	while (ms_time() < alarm)
 	{
 		if (has_simulation_stopped(data))
@@ -209,6 +204,7 @@ int	main(int argc, char **argv)
 			break ;
 		i++;
 	}
+	usleep(100);
 	if (data.count > 1)
 		pthread_create(&data.monitor, NULL, &monitor, &data);
 	i = 0;
@@ -220,6 +216,5 @@ int	main(int argc, char **argv)
 	if (data.count > 1)
 		pthread_join(data.monitor, NULL);
 	ft_exit_mutex(&data);
-	//get_bill(&data);
 	return (EXIT_SUCCESS);
 }
