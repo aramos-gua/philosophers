@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/17 16:08:48 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/17 17:25:01 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,9 @@ bool	starved(t_philo *philo)
 	unsigned long	time;
 
 	time = ms_time();
-	if ((time - philo->last_meal) >= (philo->data->ttd + 1))
+	if ((time - philo->last_meal) >= (philo->data->ttd))
 	{
-		printf("philo %d is starving: start =%lu, now=%lu, last_meal=%lu, last_meal_vs_now=%lu, ttd=%lu\n", philo->id, philo->data->start_time, ms_time(), philo->last_meal, (time - philo->last_meal), philo->data->ttd);
+		//printf("philo %d is starving: start =%lu, now=%lu, last_meal=%lu, last_meal_vs_now=%lu, ttd=%lu\n", philo->id, philo->data->start_time, ms_time(), philo->last_meal, (time - philo->last_meal), philo->data->ttd);
 		set_sim_stop_flag(philo->data, true);
 		filter_stamp(philo, true, 1);
 		return (true);
