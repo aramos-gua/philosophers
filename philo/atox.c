@@ -59,9 +59,9 @@ long	ft_atoln(const char *str)
 	return (num * sign);
 }
 
-unsigned int	ft_atou(const char *str)
+unsigned long	ft_atou(const char *str)
 {
-	unsigned int	num;
+	unsigned long	num;
 
 	num = 0;
 	while ((*str > 8 && *str < 14) || *str == ' ')

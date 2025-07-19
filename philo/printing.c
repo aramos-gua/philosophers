@@ -25,15 +25,15 @@ void	filter_stamp(t_philo *philo, bool flag, unsigned int verb)
 		pthread_mutex_unlock(&philo->data->print_lock);
 		return ;
 	}
-	if (verb == 1)//die
+	if (verb == 1)
 		stamp(philo, "died");
-	else if (verb == 2)//eat
+	else if (verb == 2)
 		stamp(philo, "is eating");
-	else if (verb == 3)//sleep
+	else if (verb == 3)
 		stamp(philo, "is sleeping");
-	else if (verb == 4)//think
+	else if (verb == 4)
 		stamp(philo, "is thinking");
-	else if (verb == 5)//fork
+	else if (verb == 5)
 		stamp(philo, "has taken a fork");
 	pthread_mutex_unlock(&philo->data->print_lock);
 }

@@ -26,13 +26,22 @@ static int	isnt_pos_number(char *str)
 	return (0);
 }
 
-static int	off_bounds(char *str)
+static int	off_bounds(int i, char *str)
 {
 	long	num;
 
 	num = ft_atoln(str);
-	if (num > UINT_MAX)
-		return (1);
+	if (i == 1 && num > 200)
+		return (printf("%s", COUNT_MAX), 1);
+	else if (i == 2 || i == 3 || i == 4)
+	{
+		if (num < 60)
+			return (printf("%s", CHOKE), 1);
+		if (num > 60000)
+			return (printf("%s", WAIT_MAX), 1);
+	}
+	else if (i == 5 && num > 1000)
+		return (printf("%s", ROUNDS_MAX), 1);
 	if (num < 0)
 		return (1);
 	return (0);
@@ -47,12 +56,12 @@ int	check_args(int options, char **argv)
 	{
 		if (isnt_pos_number(argv[i]) != 0)
 		{
-			printf("Error: %s is not a valid positive number\n", argv[i]);
+			printf("Error: \"%s\" is not a valid positive number\n", argv[i]);
 			return (1);
 		}
-		if (off_bounds(argv[i]) != 0)
+		if (off_bounds(i, argv[i]) != 0)
 		{
-			printf("Error: Number out of bounds\n");
+			printf("Error: %d argument out of bounds\n", i);
 			return (1);
 		}
 		i++;

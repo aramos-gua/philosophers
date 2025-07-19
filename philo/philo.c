@@ -12,10 +12,10 @@
 
 #include "philo.h"
 
-void  sim_delay(unsigned long start_time)
+void	sim_delay(unsigned long start_time)
 {
-  while (ms_time() < start_time)
-    continue ;
+	while (ms_time() < start_time)
+		continue ;
 }
 
 void	set_sim_stop_flag(t_data *data, bool flag)
@@ -44,7 +44,6 @@ bool	starved(t_philo *philo)
 	time = ms_time();
 	if ((time - philo->last_meal) >= (philo->data->ttd))
 	{
-		//printf("philo %d is starving: start =%lu, now=%lu, last_meal=%lu, last_meal_vs_now=%lu, ttd=%lu\n", philo->id, philo->data->start_time, ms_time(), philo->last_meal, (time - philo->last_meal), philo->data->ttd);
 		set_sim_stop_flag(philo->data, true);
 		filter_stamp(philo, true, 1);
 		return (true);
@@ -55,7 +54,7 @@ bool	starved(t_philo *philo)
 bool	hit_end(t_data *data)
 {
 	unsigned int	i;
-	bool	all_rounds;
+	bool			all_rounds;
 
 	all_rounds = true;
 	i = 0;
@@ -112,7 +111,7 @@ void	ft_sleep(t_data *data, unsigned long sleep_time)
 	}
 }
 
-void  eat_sleep_routine(t_philo *philo)
+void	eat_sleep_routine(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->forks[philo->fork[0]]);
 	filter_stamp(philo, false, 5);
@@ -135,22 +134,22 @@ void  eat_sleep_routine(t_philo *philo)
 	ft_sleep(philo->data, philo->data->tts);
 }
 
-void  think_routine(t_philo *philo, bool silent)
+void	think_routine(t_philo *philo, bool silent)
 {
- unsigned long  ttt;
+	unsigned long	ttt;
 
- pthread_mutex_lock(&philo->meal_time_lock);
- ttt = (philo->data->ttd - (ms_time() - philo->last_meal) - philo->data->tte) / 2;
- pthread_mutex_unlock(&philo->meal_time_lock);
- if (ttt == 0 && silent == true)
-   ttt = 1;
-if (ttt > 200)
-	ttt = 0;
- if (ttt > 600)
-   ttt = 200;
- if (silent == false)
-       	filter_stamp(philo, false, 4);
- ft_sleep(philo->data, ttt);
+	pthread_mutex_lock(&philo->meal_time_lock);
+	ttt = (philo->data->ttd - (ms_time() - philo->last_meal) - philo->data->tte) / 2;
+	pthread_mutex_unlock(&philo->meal_time_lock);
+	if (ttt == 0 && silent == true)
+		ttt = 1;
+	if (ttt > 200)
+		ttt = 0;
+	if (ttt > 600)
+		ttt = 200;
+	if (silent == false)
+			filter_stamp(philo, false, 4);
+	ft_sleep(philo->data, ttt);
 }
 
 static void	*forever_alone(t_philo *philo)
@@ -177,7 +176,7 @@ void	*routine(void *data)
 	if (philo->data->ttd == 0)
 		return (NULL);
 	if (philo->data->count == 1)
-		return(forever_alone(philo));
+		return (forever_alone(philo));
 	else if (philo->id % 2)
 		think_routine(philo, true);
 	while (has_simulation_stopped(philo->data) == false)
