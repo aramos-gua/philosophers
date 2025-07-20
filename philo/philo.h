@@ -59,21 +59,40 @@ typedef struct s_data
 	pthread_mutex_t	sim_lock;
 }	t_data;
 
-// Init
+//philo.c
+void			set_sim_stop_flag(t_data *data, bool flag);
+bool			has_simulation_stopped(t_data *data);
+
+//threads.c
+void			*routine(void *data);
+void			*monitor(void *arg);
+
+//actions.c
+void			think_routine(t_philo *philo, bool silent);
+void			eat_sleep_routine(t_philo *philo);
+void			ft_sleep(t_data *data, unsigned long sleep_time);
+
+//error_check.c
+int				check_args(int options, char **argv);
+
+//exit.c
+bool			hit_end(t_data *data);
+bool			starved(t_philo *philo);
+int				error_message(char *str);
+void			ft_exit_mutex(t_data *data);
+
+//init.c
 void			data_init(t_data *data, int argc, char **argv);
 void			philo_init(t_data *data);
+void			sim_delay(unsigned long start_time);
 size_t			ms_time(void);
 
-// Libft functions
+//libft.c
 int				ft_isdigit(int c);
 long			ft_atoln(const char *str);
 unsigned long	ft_atou(const char *str);
 int				ft_atoi(const char *nptr);
 
-// Error handling 
-int				check_args(int options, char **argv);
-void			ft_exit_mutex(t_data *data);
-int				error_message(char *str);
+//printing.c
 void			filter_stamp(t_philo *philo, bool flag, unsigned int verb);
-bool			has_simulation_stopped(t_data *data);
 #endif

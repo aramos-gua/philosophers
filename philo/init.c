@@ -6,11 +6,17 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 15:07:50 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/17 15:37:46 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/20 12:31:08 by aramos           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	sim_delay(unsigned long start_time)
+{
+	while (ms_time() < start_time)
+		continue ;
+}
 
 unsigned long	ms_time(void)
 {

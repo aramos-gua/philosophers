@@ -32,8 +32,9 @@ NAME = philo
 SRC = ./philo.c\
 	  ./init.c\
 	./libft.c\
-	./atox.c\
 	./error_check.c\
+	./threads.c\
+	./actions.c\
 	./exit.c\
 	./printing.c
 
