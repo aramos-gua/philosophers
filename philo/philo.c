@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/20 12:33:29 by aramos           ###   ########.fr       */
+/*   Updated: 2025/07/22 11:30:56 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,13 @@ bool	has_simulation_stopped(t_data *data)
 	return (answer);
 }
 
+static int	thread_exit(t_data *data, unsigned int i)
+{
+	data->count = i;
+	ft_exit_mutex(data);
+	return (EXIT_FAILURE);
+}
+
 int	main(int argc, char **argv)
 {
 	unsigned int	i;
@@ -42,15 +49,20 @@ int	main(int argc, char **argv)
 	data_init(&data, argc, argv);
 	data.start_time = ms_time() + (data.count * 200);
 	while (++i < data.count)
-		pthread_create(&data.philo[i].thread, NULL, &routine, &data.philo[i]);
+		if (pthread_create(&data.philo[i].thread\
+, NULL, &routine, &data.philo[i]) != 0)
+			thread_exit(&data, i);
 	usleep(100);
 	if (data.count > 1)
-		pthread_create(&data.monitor, NULL, &monitor, &data);
+		if (pthread_create(&data.monitor, NULL, &monitor, &data) != 0)
+			thread_exit(&data, i);
 	i = -1;
 	while (++i < data.count)
-		pthread_join(data.philo[i].thread, NULL);
+		if (pthread_join(data.philo[i].thread, NULL) != 0)
+			return (ft_exit_mutex(&data), EXIT_FAILURE);
 	if (data.count > 1)
-		pthread_join(data.monitor, NULL);
+		if (pthread_join(data.monitor, NULL) != 0)
+			return (ft_exit_mutex(&data), EXIT_FAILURE);
 	ft_exit_mutex(&data);
 	return (EXIT_SUCCESS);
 }

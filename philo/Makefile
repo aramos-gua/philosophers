@@ -24,7 +24,7 @@ DARK_YELLOW =	\033[38;5;143m
 
 # Compiler information
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -pthread -g -fsanitize=thread #-fsanitize=address
+CFLAGS = -Wall -Werror -Wextra -pthread -g #-fsanitize=thread #-fsanitize=address
 # Target names
 NAME = philo
 
