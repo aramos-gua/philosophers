@@ -87,4 +87,5 @@ void	data_init(t_data *data, int argc, char **argv)
 	pthread_mutex_init(&data->print_lock, NULL);
 	pthread_mutex_init(&data->sim_lock, NULL);
 	data->sim_stop = false;
+	printf("Guests arriving\nGuests guided to table\nGuests sitting down...\n");
 }

@@ -48,7 +48,7 @@ int	main(int argc, char **argv)
 	if (argc < 5 || check_args(argc - 1, argv) || argc > 6)
 		return (printf("%s", USAGE), EXIT_FAILURE);
 	data_init(&data, argc, argv);
-	data.start_time = ms_time() + (data.count * 200);
+	data.start_time = ms_time() + (data.count * 10);
 	while (++i < data.count)
 		if (pthread_create(&data.philo[i].thread,
 				NULL, &routine, &data.philo[i]) != 0)
