@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 22:10:56 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/22 11:30:56 by alex             ###   ########.fr       */
+/*   Updated: 2025/07/22 12:03:43 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ static int	thread_exit(t_data *data, unsigned int i)
 {
 	data->count = i;
 	ft_exit_mutex(data);
+	error_message("Error: mutex_init/pthread_create failed");
 	return (EXIT_FAILURE);
 }
 

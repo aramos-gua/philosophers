@@ -6,7 +6,7 @@
 /*   By: aramos <alejandro.ramos.gua@gmail.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 15:07:50 by aramos            #+#    #+#             */
-/*   Updated: 2025/07/20 12:31:08 by aramos           ###   ########.fr       */
+/*   Updated: 2025/07/22 12:05:32 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,8 @@ void	data_init(t_data *data, int argc, char **argv)
 	if (!data->forks)
 		error_message("Error/init: Malloc Failed\n");
 	while (i < data->count)
-		pthread_mutex_init(&data->forks[i++], NULL);
+		if (pthread_mutex_init(&data->forks[i++], NULL) != 0)
+			thread_exit(data, i);
 	pthread_mutex_init(&data->print_lock, NULL);
 	pthread_mutex_init(&data->sim_lock, NULL);
 	data->sim_stop = false;
