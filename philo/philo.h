@@ -62,6 +62,7 @@ typedef struct s_data
 //philo.c
 void			set_sim_stop_flag(t_data *data, bool flag);
 bool			has_simulation_stopped(t_data *data);
+int				thread_exit(t_data *data, unsigned int i);
 
 //threads.c
 void			*routine(void *data);
@@ -79,7 +80,7 @@ int				check_args(int options, char **argv);
 bool			hit_end(t_data *data);
 bool			starved(t_philo *philo);
 int				error_message(char *str);
-void			ft_exit_mutex(t_data *data);
+void			ft_exit_mutex(t_data *data, unsigned int n_created);
 
 //init.c
 void			data_init(t_data *data, int argc, char **argv);

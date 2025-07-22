@@ -47,7 +47,7 @@ void	philo_init(t_data *data)
 	philo = malloc(data->count * sizeof(t_philo));
 	if (!philo)
 	{
-		ft_exit_mutex(data);
+		ft_exit_mutex(data, 0);
 		error_message("Error/philo: Malloc Failed\n");
 	}
 	data->philo = philo;
@@ -83,7 +83,7 @@ void	data_init(t_data *data, int argc, char **argv)
 		error_message("Error/init: Malloc Failed\n");
 	while (i < data->count)
 		if (pthread_mutex_init(&data->forks[i++], NULL) != 0)
-			thread_exit(data, i);
+			ft_exit_mutex(data, i);
 	pthread_mutex_init(&data->print_lock, NULL);
 	pthread_mutex_init(&data->sim_lock, NULL);
 	data->sim_stop = false;

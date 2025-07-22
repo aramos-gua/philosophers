@@ -12,16 +12,21 @@
 
 #include "philo.h"
 
-void	ft_exit_mutex(t_data *data)
+void	ft_exit_mutex(t_data *data, unsigned int n_created)
 {
 	unsigned int	i;
 
+	if (n_created != data->count)
+		data->count = n_created;
 	i = 0;
 	pthread_mutex_destroy(&data->print_lock);
 	pthread_mutex_destroy(&data->sim_lock);
-	pthread_mutex_destroy(&data->philo->meal_time_lock);
 	while (i < data->count)
-		pthread_mutex_destroy(&data->forks[i++]);
+	{
+		pthread_mutex_destroy(&data->forks[i]);
+		pthread_mutex_destroy(&data->philo[i].meal_time_lock);
+		i++;
+	}
 	if (data->forks)
 		free(data->forks);
 	if (data->philo)
